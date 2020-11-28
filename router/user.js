@@ -1,14 +1,12 @@
 const express = require('express');
-const pool = require('db/pool');
+const pool = require('../db/pool.js');
 
-const r =express.Router();
+const r = express.Router();
 
-// r.get('url', (req, res) => {
-//
-// });
-//
-// r.post('url', (req, res) => {
-//
-// });
+// 用户注册
+r.post('/register', (req, res) => {
+    body = req.query;
+    console.log(req.body);
+});
 
-modules.exports = r;
+module.exports = r;
