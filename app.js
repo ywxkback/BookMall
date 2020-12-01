@@ -1,14 +1,14 @@
 const express = require('express')
 const app = express()
 const port = 8080
-// const session = require('express-session');
+const session = require('express-session');
 // const cookieParser = require('cookie-parser');
 // app.use(cookieParser('sessiontest'));
-// app.use(session({
-//     secret: 'sessiontest',//与cookieParser中的一致
-//     resave: true,
-//     saveUninitialized:true
-// }));
+app.use(session({
+    secret: 'sessiontest',//与cookieParser中的一致
+    resave: true,
+    saveUninitialized:true
+}));
 // 主页
 // app.get('/', (req, res) => {
 //     res.sendFile('./views/index.html');

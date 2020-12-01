@@ -46,4 +46,17 @@ r.get('/deleteOrder', (request, response) => {
     });
 });
 
+/* 确认收货 */
+r.get('/receiveOrder', (request, response) => {
+    // var
+});
+
+
+
+
+
+
+
+
+
 module.exports = r;

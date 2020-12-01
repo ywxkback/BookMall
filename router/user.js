@@ -48,13 +48,13 @@ r.post('/userRegister',(req,res)=>{
 
 //用户登录
 r.post('/userLogin',(req,res)=>{
-
     //获取数据
     let obj = req.body;
     console.log(obj);
     var uId = obj.uId;
     req.session.uId = uId;
     var uPwd = obj.uId;
+    req.session.uId = uId;
     //验证数据是否为空
     if(!uId){
         res.send({code:401,msg:'userId required'})
@@ -83,6 +83,7 @@ r.post('/userLogout',(req,res)=>{
     console.log(req.session)
     if(req.session.uId){
         var uId = req.session.uId;
+        req.session.uId = ""
         res.send('你好'+uId+'，欢迎来到我的家园。');
     }else{
         res.send('你还没有登录，先登录下再试试！');
