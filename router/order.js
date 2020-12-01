@@ -15,6 +15,34 @@ r.get('/findAll', (request, response) => {
     })
 });
 
+/* 创建订单 */
+r.post('/createOrder', (request, response) => {
+    var bIdList = request.body.bIdList.split(",");
+    var bNumList = request.body.bNumList.split(",");
+    var n = bIdList.length;
+    var oTotalPrice = request.body.oTotalPrice;
+    var oAddress = request.body.oAddress;
+    var uId = request.session.uId;
+    console.log(request.body)
+    var sql = "INSERT INTO `orders` (uId,oTotalPrice,oAddress,oState) VALUES (?,?,?,'进行中') ";
+    pool.query(sql,[uId,oTotalPrice,oAddress], (err, result, fields) => {
+        if (err) throw err;
+        var oId = result.insertId;
+        for(var i = 0;i < n;i++)
+        {
+            var bId = bIdList[i];
+            var bNum = bNumList[i];
+            var sql2 = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
+            pool.query(sql2,[oId,bId,bNum],(err,result,fields) => {
+                if(err) throw err;
+                response.send({'code' : 600});
+            })
+        }
+    })
+
+});
+
+
 /* 删除订单 */
 r.get('/deleteOrder', (request, response) => {
     var uId = request.query.uId;
@@ -29,8 +57,6 @@ r.get('/deleteOrder', (request, response) => {
         if(result.affectedRows===0){
             response.send({code:405,msg:'订单不存在'});
             return;
-        }else{
-            response.send({code:500,msg:'删除成功'});
         }
     });
     var sql2 = 'DELETE FROM orders WHERE uId=? AND oId = ?';
