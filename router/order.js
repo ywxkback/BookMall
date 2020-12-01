@@ -48,7 +48,20 @@ r.get('/deleteOrder', (request, response) => {
 
 /* 确认收货 */
 r.get('/receiveOrder', (request, response) => {
-    // var
+    var uId = request.query.uId;
+    var oId = request.query.oId;
+    var oState = "已完成"
+    var sql = "UPDATE orders SET oState=? WHERE uId=? AND oId=?";
+    pool.query(sql,[oState,uId,oId],(err,result)=>{
+        if(err) throw err;
+        //返回对象，通过affectedRows判断是否删除成功
+        console.log(result);
+        if(result.affectedRows===0){
+            response.send({code:405,msg:'订单不存在'});
+        }else{
+            response.send({code:600,msg:'确认收货成功'});
+        }
+    });
 });
 
 
