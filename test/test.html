@@ -9,11 +9,32 @@
     <script src="../public/js/bootstrap.min.js"></script>
 </head>
 <body>
-<form action="/cart/getUserCart" method="post">
-    <!--        bId:<input type="text" name="bId"><br/>-->
-    uId:<input type="text" name="uId">
-    <!--        uId:<input type="text" name="bNum">-->
-    <input type="submit" />
+<form action="/cart/calcTotalPrice" method="post">
+    <input type="checkbox" name="arr" value="1" bNum="1">
+    <input type="checkbox" name="arr" value="2" bNum="2">
+    <input type="checkbox" name="arr" value="3" bNum="3">
+    <input type="checkbox" name="arr" value="4" bNum="4">
+    <input type="checkbox" name="arr" value="5" bNum="5">
+    <input type="button" value="submit" id="btnSubmit">
 </form>
 </body>
+<script>
+    $('#btnSubmit').click( function() {
+        var $bIdList = [];
+        var $bNumList = [];
+        $("input[name='arr']").each((index, element) => {
+            var bId = $(element).attr('value');
+            var bNum = $(element).attr('bNum');
+            $bIdList.push(bId);
+            $bNumList.push(bNum);
+        })
+        $.post('/cart/calcTotalPrice',
+            {
+                "bIdList" : $bIdList.join(),
+                "bNumList" : $bNumList.join()
+            }, function(data) {
+
+            });
+    });
+</script>
 </html>
