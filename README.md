@@ -45,7 +45,7 @@
 * 图书数量减1 `minusOneBook`
 * 修改图书数量 `modifyBookNum`
 * 计算被选中的图书的价格 `calcTotalPrice`
-* 结算（清空购物车、创建订单）`checkout`
+* 结算（删除被选中的图书、创建订单）`checkout`
 * 返回用户的购物车 `getUserCart`
 
 **图书模块** `book`
