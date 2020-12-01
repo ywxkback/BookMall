@@ -20,7 +20,8 @@ const cartRouter = require('./router/cart');
 app.use('/cart', cartRouter);
 
 /* test 静态资源挂载，用于测试 */
-app.use(express.static('./test'))
+app.use(express.static(__dirname + '/test'))
+app.use('/public',express.static(__dirname + '/public'))
 
 /* 监听 */
 app.listen(port, () => {
