@@ -15,11 +15,14 @@ app.use('/user', userRouter);
 /* book 路由 */
 const bookRouter = require('./router/book')
 app.use('/book', bookRouter);
+/* cart 路由 */
+const cartRouter = require('./router/cart');
+app.use('/cart', cartRouter);
 
 /* test 静态资源挂载，用于测试 */
 app.use(express.static('./test'))
 
 /* 监听 */
 app.listen(port, () => {
-    console.log(`Home: http://localhost:${port}`)
+    console.log(`Home: http://localhost:${port}/test.html`)
 })
