@@ -17,28 +17,29 @@ r.post('/userRegister',(req,res)=>{
     let obj = req.body;
     console.log(obj)
     //2.验证数据是否为空
-    if(!obj.uname){
-        res.send({code:401,msg:'uname required'});
+    
+    if(!obj.uId){
+        res.send({code:401,msg:'uId required'});
         //阻止往后执行
         return;
     }
-    if(!obj.upwd){
-        res.send({code:402,msg:'upwd required'});
+    if(!obj.uName){
+        res.send({code:402,msg:'uName required'});
         //阻止往后执行
         return;
     }
-    if(!obj.email){
-        res.send({code:403,msg:'email required'});
+    if(!obj.uPwd){
+        res.send({code:403,msg:'uPwd required'});
         //阻止往后执行
         return;
     }
-    if(!obj.phone){
-        res.send({code:404,msg:'phone required'});
+    if(!obj.uPhone){
+        res.send({code:404,msg:'uPhone required'});
         //阻止往后执行
         return;
     }
     //执行sql命令  将数据添加到数据库
-    pool.query('INSERT INTO users SET  ?',[obj],(err,result)=>{
+    pool.query('INSERT INTO users SET ?',[obj],(err,result)=>{
         if(err) throw err;
         console.log(result);
         //注册成功
@@ -53,17 +54,17 @@ r.post('/userLogin',(req,res)=>{
     let obj = req.body;
     console.log(obj);
     //验证数据是否为空
-    if(!obj.uname){
-        res.send({code:401,msg:'uname required'})
+    if(!obj.uId){
+        res.send({code:401,msg:'userId required'})
         return;
     }
-    if(!obj.upwd){
-        res.send({code:402,msg:'upwd required'})
+    if(!obj.uPwd){
+        res.send({code:402,msg:'userPwd required'})
         return;
     }
 
     //到数据库中查询是否有用户名和密码同时匹配的数据
-    pool.query('SELECT * FROM users WHERE uId=? AND uPwd=?',[obj.uname,obj.upwd],(err,result)=>{
+    pool.query('SELECT * FROM users WHERE uId=? AND uPwd=?',[obj.uId,obj.uPwd],(err,result)=>{
         if(err) throw err;
         //返回空数组，长度为0 ，说明登录失败
         if(result.length===0){
