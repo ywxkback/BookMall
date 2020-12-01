@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="../public/css/bootstrap.css">
+    <script src="../public/js/jquery.min.js"></script>
+    <script src="../public/js/popper.min.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
 </head>
 <body>
 <!--    <h2>订单查询</h2>-->
@@ -18,12 +22,52 @@
 <!--        <input type='submit'>-->
 <!--    </form>-->
 
-    <h2>确认收货</h2>
-    <form method = 'get' action='/order/receiveOrder'>
+<!--    <h2>确认收货</h2>-->
+<!--    <form method = 'get' action='/order/receiveOrder'>-->
+<!--        账号：<input type='text'  name='uId'><br/>-->
+<!--        订单号：<input type='text'  name='oId'><br/>-->
+<!--        <input type='submit'>-->
+<!--    </form>-->
+
+    <h2>创建订单</h2>
+    <form action="/order/createOrder" method="post">
         账号：<input type='text'  name='uId'><br/>
-        订单号：<input type='text'  name='oId'><br/>
-        <input type='submit'>
+        总金额<input type='text' value="100" name='oTotalPrice'><br/>
+        地址<input type='text' value="华师" name='oAddress'><br/>
+        <input type="checkbox" name="arr" value="1" bNum="1">
+        <input type="checkbox" name="arr" value="2" bNum="2">
+        <input type="checkbox" name="arr" value="3" bNum="3">
+        <input type="checkbox" name="arr" value="4" bNum="4">
+        <input type="checkbox" name="arr" value="5" bNum="5">
+        <input type="button" value="submit" id="btnSubmit">
     </form>
+    </body>
+    <script>
+        $('#btnSubmit').click( function() {
+            var $bIdList = [];
+            var $bNumList = [];
+            $("input[name='arr']").each((index, element) => {
+                var bId = $(element).attr('value');
+                var bNum = $(element).attr('bNum');
+                $bIdList.push(bId);
+                $bNumList.push(bNum);
+            })
+            var $oTotalPrice = $("input[name='oTotalPrice']").attr('value');
+            console.log($oTotalPrice)
+            var $oAddress = $("input[name='oAddress']").attr('value');
+            console.log($oAddress)
+            $.post('/order/createOrder',
+                {
+                    "oTotalPrice":$oTotalPrice,
+                    "oAddress":$oAddress,
+                    "bIdList" : $bIdList.join(),
+                    "bNumList" : $bNumList.join()
+                }, function(data) {
+                    alert(data);
+                });
+        });
+    </script>
+
 
 </body>
 </html>

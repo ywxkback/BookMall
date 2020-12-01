@@ -53,8 +53,7 @@ r.post('/userLogin',(req,res)=>{
     console.log(obj);
     var uId = obj.uId;
     req.session.uId = uId;
-    var uPwd = obj.uId;
-    req.session.uId = uId;
+    var uPwd = obj.uPwd;
     //验证数据是否为空
     if(!uId){
         res.send({code:401,msg:'userId required'})
