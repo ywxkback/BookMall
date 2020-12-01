@@ -26,6 +26,9 @@ const cartRouter = require('./router/cart')
 app.use('/cart', cartRouter);
 /* test 静态资源挂载，用于测试 */
 app.use(express.static('./test'))
+/* public 静态资源挂载 */
+app.use('/public',express.static(__dirname + '/public'))
+
 
 // 监听
 app.listen(port, () => {
