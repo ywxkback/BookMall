@@ -24,21 +24,25 @@ r.post('/createOrder', (request, response) => {
     var oAddress = request.body.oAddress;
     var uId = request.session.uId;
     console.log(request.body)
-    var sql = "INSERT INTO `orders` (uId,oTotalPrice,oAddress,oState) VALUES (?,?,?,'进行中') ";
-    pool.query(sql,[uId,oTotalPrice,oAddress], (err, result, fields) => {
+    var sqlOrders = "INSERT INTO `orders` (uId,oTotalPrice,oAddress,oState) VALUES (?,?,?,'进行中') ";
+    pool.query(sqlOrders,[uId,oTotalPrice,oAddress], (err, result, fields) => {
         if (err) throw err;
         var oId = result.insertId;
         for(var i = 0;i < n;i++)
         {
             var bId = bIdList[i];
             var bNum = bNumList[i];
-            var sql2 = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
-            pool.query(sql2,[oId,bId,bNum],(err,result,fields) => {
+            var sqlOrderBook = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
+            pool.query(sqlOrderBook,[oId,bId,bNum],(err,result,fields) => {
                 if(err) throw err;
+            })
+            var sqlCartDe = "DELETE FROM `cart` WHERE uId=? AND bId = ?"
+            pool.query(sqlCartDe, [uId, bId], (err, result) => {
+                if (err) throw err;
             })
         }
     })
-
+    response.send({'code' : 700});
 });
 
 
