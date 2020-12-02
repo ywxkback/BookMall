@@ -35,7 +35,6 @@ r.post('/createOrder', (request, response) => {
             var sql2 = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
             pool.query(sql2,[oId,bId,bNum],(err,result,fields) => {
                 if(err) throw err;
-                response.send({'code' : 600});
             })
         }
     })
