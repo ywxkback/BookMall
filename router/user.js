@@ -64,7 +64,6 @@ r.post('/userLogin', (req, res) => {
         } else {//查询到匹配的用户  登录成功
             res.send({code: 300, msg: 'login success'})
         }
-        console.log(result);
     })
 })
 

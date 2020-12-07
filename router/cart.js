@@ -5,7 +5,7 @@ const r = express.Router();
 
 r.post('/addBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -47,7 +47,7 @@ r.post('/addBook', (request, response) => {
 
 r.post('/deleteBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -67,7 +67,7 @@ r.post('/deleteBook', (request, response) => {
 
 r.post('/addOneBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -86,7 +86,7 @@ r.post('/addOneBook', (request, response) => {
 
 r.post('/minusOneBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -109,7 +109,7 @@ r.post('/minusOneBook', (request, response) => {
 });
 
 r.post('/modifyBookNum', (request, response) => {
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     var bId = request.body.bId;
     var bNum = request.body.bNum;
     // 判空
@@ -129,7 +129,7 @@ r.post('/modifyBookNum', (request, response) => {
 });
 
 r.post('/getUserCart', (request, response) => {
-    var uId = req.session.uId;
+    var uId = request.session.uId;
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
         return;
