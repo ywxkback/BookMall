@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <script type="text/javascript" src="static/jsp/regist.js"></script>
+    <link rel="stylesheet" href="regist.css">
+</head>
+
+<body>
+<div id="loginDiv">
+    <form action="">
+        <h1>注  册</h1>
+        <p>姓名:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input id="userNname" type="text" autofocus required><label id="name_trip"></label></p>
+
+        <p>密码:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input id="password" type="password" required><label id="password_trip"></label></p>
+
+        <p>确认密码:<input id="surePassword" type="password" required><label id="surePassword_trip"></label></p>
+
+        <p>
+            用户类型:
+            <select name="type" id="userType">
+                <option value="0">请选择</option>
+                <option value="1">普通用户</option>
+                <option value="2">VIP用户</option>
+            </select>
+            <label id="type_trip"></label>
+        </p>
+
+        <div class="sexDiv">
+            用户性别:
+            <input class="userSex" name="sex" value="boy" type="radio">男
+            <input class="userSex" name="sex" value="girl" type="radio">女
+            <label id="sex_trip"></label>
+        </div>
+
+        <p>
+            出生日期:
+            <input id="birthday" type="date">
+            <label id="birthday_trip"></label>
+        </p>
+
+        <p>
+            电子邮件:
+            <input id="email" type="email" required>
+            <label id="emil_trip"></label>
+        </p>
+
+        <p class="hobby">
+            书籍爱好:
+            <input type="checkbox" name="hobby" value="read">科幻
+            <input type="checkbox" name="hobby" value="music">悬疑
+            <input type="checkbox" name="hobby" value="sport">治愈
+            <label id="hobby_trip"></label>
+        </p>
+
+
+        <p> 自我介绍:</p>
+        <div class="introduce">
+            <textarea name="introduce" cols="30" id="introduceText" required rows="5"></textarea>
+            <label id="introduce_trip"></label>
+        </div>
+
+        <p style="text-align: center;">
+            <input type="submit" class="button" onblur="checkForm()" onclick="return submitT()" value="注 册  ">
+            <input type="reset" class="button" value="重 置  ">
+        </p>
+    </form>
+</div>
+
+</body>
+</html>
