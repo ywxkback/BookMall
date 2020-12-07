@@ -1,12 +1,3 @@
-
-.idea/codeStyles/codeStyleConfig.xml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/modules.xml
+*.xml
+db/pool.js
 .idea/temp.iml
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/jsLibraryMappings.xml
-db/pool.js
-db/pool.js
-接口文档说明.docx
-db/pool.js
