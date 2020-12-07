@@ -170,11 +170,4 @@ r.post('/calcTotalPrice', (request, response) => {
     }
 });
 
-r.post('/checkout', (request, response) => {
-    var bIdList = request.body.bIdList.split(",");
-    var bNumList = request.body.bNumList.split(",");
-    var n = bIdList.length;
-
-});
-
 module.exports = r;
