@@ -49,7 +49,7 @@ r.post('/createOrder', (request, response) => {
 
 /* 删除订单 */
 r.get('/deleteOrder', (request, response) => {
-    var uId = request.query.uId;
+    var uId = request.session.uId;
     var oId = request.query.oId;
     console.log(uId)
     console.log(oId)
@@ -78,7 +78,7 @@ r.get('/deleteOrder', (request, response) => {
 
 /* 确认收货 */
 r.get('/receiveOrder', (request, response) => {
-    var uId = request.query.uId;
+    var uId = request.session.uId;
     var oId = request.query.oId;
     var oState = "已完成"
     var sql = "UPDATE orders SET oState=? WHERE uId=? AND oId=?";
