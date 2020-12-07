@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `bookdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `bookdb`;
 -- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: bookdb
+-- Host: localhost    Database: bookdb
 -- ------------------------------------------------------
 -- Server version	8.0.22
 
@@ -167,4 +169,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-03 22:34:18
+-- Dump completed on 2020-12-07 21:38:17
