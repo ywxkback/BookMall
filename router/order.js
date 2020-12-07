@@ -93,12 +93,4 @@ r.get('/receiveOrder', (request, response) => {
     });
 });
 
-
-
-
-
-
-
-
-
 module.exports = r;
