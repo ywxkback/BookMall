@@ -41,10 +41,6 @@ app.use('/public', express.static(__dirname + '/public'))
 
 /* 监听 */
 app.listen(port, () => {
-<<<<<<< Updated upstream
-    console.log(`Home: http://localhost:${port}/test.html`)
-})
-=======
     console.log(`Home: http://localhost:${port}/index.html`)
 })
->>>>>>> Stashed changes
+
