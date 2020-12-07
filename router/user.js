@@ -9,23 +9,18 @@ r.post('/userRegister', (req, res) => {
     let obj = req.body;
     console.log(obj)
     //2.验证数据是否为空
-    if (!obj.uId) {
-        res.send({code: 401, msg: 'uId required'});
-        //阻止往后执行
-        return;
-    }
     if (!obj.uName) {
-        res.send({code: 402, msg: 'uName required'});
+        res.send({code: 401, msg: 'uName required'});
         //阻止往后执行
         return;
     }
     if (!obj.uPwd) {
-        res.send({code: 403, msg: 'uPwd required'});
+        res.send({code: 402, msg: 'uPwd required'});
         //阻止往后执行
         return;
     }
     if (!obj.uPhone) {
-        res.send({code: 404, msg: 'uPhone required'});
+        res.send({code: 403, msg: 'uPhone required'});
         //阻止往后执行
         return;
     }
@@ -43,12 +38,11 @@ r.post('/userLogin', (req, res) => {
     //获取数据
     let obj = req.body;
     console.log(obj);
-    var uId = obj.uId;
-    req.session.uId = uId;
+    var uName = obj.uName;
     var uPwd = obj.uPwd;
     //验证数据是否为空
-    if (!uId) {
-        res.send({code: 401, msg: 'userId required'})
+    if (!uName) {
+        res.send({code: 401, msg: 'uName required'})
         return;
     }
     if (!uPwd) {
@@ -56,12 +50,14 @@ r.post('/userLogin', (req, res) => {
         return;
     }
     //到数据库中查询是否有用户名和密码同时匹配的数据
-    pool.query('SELECT * FROM users WHERE uId=? AND uPwd=?', [obj.uId, obj.uPwd], (err, result) => {
+    pool.query('SELECT * FROM users WHERE uName=? AND uPwd=?', [uName, uPwd], (err, result) => {
         if (err) throw err;
         //返回空数组，长度为0 ，说明登录失败
         if (result.length === 0) {
             res.send({code: 301, msg: 'login err'})
         } else {//查询到匹配的用户  登录成功
+            req.session.uId = result[0].uId;
+            console.log(result[0].uId)
             res.send({code: 300, msg: 'login success'})
         }
     })
