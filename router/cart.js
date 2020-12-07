@@ -129,7 +129,7 @@ r.post('/modifyBookNum', (request, response) => {
 });
 
 r.post('/getUserCart', (request, response) => {
-    var uId = request.body.uId;
+    var uId = req.session.uId;
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
         return;
