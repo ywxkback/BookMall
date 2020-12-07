@@ -27,14 +27,16 @@ r.get('/searchByKey', (request, response) => {
     })
 });
 
-r.get('/searchByTag', (request, response) => {
-    var tag = request.query.tag;
-    var sql = 'SELECT * FROM `books` WHERE bTag=?';
-    pool.query(sql, [tag], (err, result) => {
+/* 标签搜索 */
+r.get('/searchByTags', (request, response) => {
+    var tagList = request.query.tagList.split(",");
+    // console.log(tagList);
+    var sql = "SELECT * FROM `books` WHERE bTag in (?)"
+    pool.query(sql, [tagList], (err, result) => {
         if (err) throw err;
-        console.log(result);
+        // console.log(result);
         response.send({'list' : result});
-    });
+    })
 })
 
 module.exports = r;
