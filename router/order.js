@@ -5,12 +5,13 @@ const r =express.Router();
 
 /* 返回所有订单 */
 r.get('/findAll', (request, response) => {
-    var uId = request.query.uId;
+    var uId = req.session.uId;
     var sql = 'SELECT * FROM `orders`' +
         'WHERE uId = ?';
     pool.query(sql,[uId], (err, result, fields) => {
         if (err) throw err;
         response.send({'list' : result});
+        response.send({'code': 400,msg:"返回订单成功"});
         console.log(result);
     })
 });
@@ -42,7 +43,7 @@ r.post('/createOrder', (request, response) => {
             })
         }
     })
-    response.send({'code' : 700});
+    response.send({'code' : 700,msg:"创建订单成功"});
 });
 
 

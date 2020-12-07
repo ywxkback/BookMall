@@ -62,7 +62,7 @@ r.post('/userLogin', (req, res) => {
         if (result.length === 0) {
             res.send({code: 301, msg: 'login err'})
         } else {//查询到匹配的用户  登录成功
-            res.send({code: 300, msg: 'login seccess'})
+            res.send({code: 300, msg: 'login success'})
         }
         console.log(result);
     })
@@ -74,9 +74,9 @@ r.post('/userLogout', (req, res) => {
     if (req.session.uId) {
         var uId = req.session.uId;
         req.session.uId = ""
-        res.send('你好' + uId + '，欢迎来到我的家园。');
+        res.send({code: 900, msg: 'logout success'});
     } else {
-        res.send('你还没有登录，先登录下再试试！');
+        res.send({code: 901, msg: 'logout err'});
     }
 })
 
