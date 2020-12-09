@@ -9,40 +9,71 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script>
+    <script charset="UTF-8">
         $(document).ready(function(){
             //鼠标悬停触发事件
             $("#hover_dropdown").hover(function(){
                 $(".dropdown-toggle").dropdown('toggle');
             });
 
-            //书库：显示所有图书
-            $.ajax({
-                method: 'GET',
-                url: 'http://127.0.0.1:8080/book/findAll',
-                success: function (data){
-                    let books = '<div class="row">';
-                    for(let i = 0; i < data.list.length; i++){
-                        books += '<div class="col-md-4">\n' +
-                            '                <div class="card mb-4 shadow-sm">\n' +
-                            '                    <img src="/public/img/bookCover/' + data.list[i].bUri + '" alt="" class="book-img">\n' +
-                            '                    <div class="card-body-book">\n' +
-                            '                        <div class="book-info">\n' +
-                            '                            <p class="book-title">' + data.list[i].bName + '</p>\n' +
-                            '                            <p class="book-author">' + data.list[i].bAuthor + '</p>\n' +
-                            '                        </div>\n' +
-                            '                        <div class="d-flex justify-content-between align-items-center">\n' +
-                            '                            <div class="btn-group">\n' +
-                            '                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>\n' +
-                            '                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>\n' +
-                            '                            </div>\n' +
-                            '                        </div>\n' +
-                            '                    </div>\n' +
-                            '                </div>\n' +
-                            '            </div>'
+            //获取网页链接url所带参数，用于判定页面内容：1.显示所有图书  2.显示关键字搜索结果
+            let uri = decodeURI(window.location.href);
+            // (function ($) {
+            //     $.getUrlParam = function (name) {
+            //         let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            //         let r = window.location.search.substr(1).match(reg);
+            //         if (r != null)
+            //             return unescape(r[2]);
+            //         return null;
+            //     }
+            // })(jQuery);
+            // let keyword = $.getUrlParam('keyword');
+            let keyword = uri.split('=')[1];
+            console.log(keyword);
+            if(keyword == '') {
+                showAllBooks();
+            } else{
+                $.ajax({
+                    method: 'GET',
+                    data: {
+                        'key' : keyword
+                    },
+                    url: 'http://127.0.0.1:8080/book/searchByKey',
+                    success: function (data){
+                        let books = '<div class="row">';
+                        for(let i = 0; i < data.list.length; i++){
+                            books += '<div class="col-md-4">\n' +
+                                '                <div class="card mb-4 shadow-sm">\n' +
+                                '                    <img src="/public/img/bookCover/' + data.list[i].bUri + '" alt="" class="book-img">\n' +
+                                '                    <div class="card-body-book">\n' +
+                                '                        <div class="book-info">\n' +
+                                '                            <p hidden="hidden">' + data.list[i].bId + '</p>\n' +
+                                '                            <p class="book-title">' + data.list[i].bName + '</p>\n' +
+                                '                            <p class="book-author">' + data.list[i].bAuthor + '</p>\n' +
+                                '                        </div>\n' +
+                                '                        <div class="d-flex justify-content-between align-items-center">\n' +
+                                '                            <div class="btn-group">\n' +
+                                '                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>\n' +
+                                '                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                    </div>\n' +
+                                '                </div>\n' +
+                                '            </div>';
+                        }
+                        books += '</div>';
+                        $("#bookDisplayPanel").html(books);
                     }
-                    books += '</div>';
-                    $("#bookDisplayPanel").html(books);
+                });
+            }
+
+            //搜索栏
+            $("#searchBtn").click(function(){
+                let keyword = $("#keyword").val();
+                if(keyword == ''){
+                    alert('请输入需要搜索的关键字！');
+                }else {
+                    $(location).attr('href', encodeURI('http://localhost:8080/searchResult.html?keyword=' + keyword));
                 }
             });
 
@@ -54,9 +85,9 @@
                 });
                 $.ajax({
                     method: 'GET',
-                    url: 'http://127.0.0.1:8080/book/searchByTag',
+                    url: 'http://127.0.0.1:8080/book/searchByTags',
                     data: {
-                        "labelsList": labels.join()
+                        "tagList": labels.join()
                     },
                     success: function (data) {
                         let books = '<div class="row">';
@@ -66,6 +97,7 @@
                                 '                    <img src="/public/img/bookCover/' + data.list[i].bUri + '" alt="" class="book-img">\n' +
                                 '                    <div class="card-body-book">\n' +
                                 '                        <div class="book-info">\n' +
+                                '                            <p hidden="hidden">' + data.list[i].bId + '</p>\n' +
                                 '                            <p class="book-title">' + data.list[i].bName + '</p>\n' +
                                 '                            <p class="book-author">' + data.list[i].bAuthor + '</p>\n' +
                                 '                        </div>\n' +
@@ -85,6 +117,38 @@
                 });
             });
         });
+
+        function showAllBooks() {   //书库：显示所有图书
+            $.ajax({
+                method: 'GET',
+                url: 'http://127.0.0.1:8080/book/findAll',
+                success: function (data){
+                    let books = '<div class="row">';
+                    for(let i = 0; i < data.list.length; i++){
+                        books += '<div class="col-md-4">\n' +
+                            '                <div class="card mb-4 shadow-sm">\n' +
+                            '                    <img src="/public/img/bookCover/' + data.list[i].bUri + '" alt="" class="book-img">\n' +
+                            '                    <div class="card-body-book">\n' +
+                            '                        <div class="book-info">\n' +
+                            '                            <p hidden="hidden">' + data.list[i].bId + '</p>\n' +
+                            '                            <p class="book-title">' + data.list[i].bName + '</p>\n' +
+                            '                            <p class="book-author">' + data.list[i].bAuthor + '</p>\n' +
+                            '                        </div>\n' +
+                            '                        <div class="d-flex justify-content-between align-items-center">\n' +
+                            '                            <div class="btn-group">\n' +
+                            '                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>\n' +
+                            '                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>\n' +
+                            '                            </div>\n' +
+                            '                        </div>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '            </div>'
+                    }
+                    books += '</div>';
+                    $("#bookDisplayPanel").html(books);
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -97,7 +161,7 @@
                     欢迎光临xx书店，请先<a href="view/login.html">登录</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="view/register.html">注册</a>
+                    <a href="view/regist.html">注册</a>
                 </li>
                 <li class="breadcrumb-item">
                     <div class="dropdown" id="hover_dropdown">
@@ -125,13 +189,13 @@
     <!-- 网站logo + 搜索框 + 购物车按钮 -->
     <div class="row">
         <div class="col-lg-3 col-md-12">
-            <a href="" class="navbar-brand"><img src="img/logo.png" alt=""/></a>
+            <a href="http://127.0.0.1:8080/index.html" class="navbar-brand"><img src="img/logo.png" alt=""/></a>
         </div>
         <div class="col-lg-5 col-md-12 mt-3">
             <div class="input-group">
                 <!--                <img src="img/header/search.png" alt=""/>-->
-                <input type="text" class="form-control my_small pt-0 pb-0" placeholder="请输入书籍名称、作者或出版社"/>
-                <input type="button" value="搜索" />
+                <input type="text" id="keyword" class="form-control pt-0 pb-0" placeholder="请输入书籍名称、作者或出版社"/>
+                <input type="button" id="searchBtn" value="搜索" />
             </div>
         </div>
         <!-- 带图标的按钮 -->
@@ -195,6 +259,86 @@
     <!-- 书库/搜索结果展示区 -->
     <div class="container" id="bookDisplayPanel"></div>
 
+    <!-- 分割线 -->
+    <hr color="#ffffff" />
+
+
+    <!-- 底部footer -->
+    <ul class="list-unstyled d-flex justify-content-around" id="footer_upper">
+        <li>
+            <img src="img/zhengpin.png" alt=""/>
+            <p>正规渠道，正品保障</p>
+        </li>
+        <li>
+            <img src="img/peisong.png" alt=""/>
+            <p>多仓直发，极速配送</p>
+        </li>
+        <li>
+            <img src="img/huodaofukuan.png" alt=""/>
+            <p>放心购物，货到付款</p>
+        </li>
+        <li>
+            <img src="img/pinleiqiquan.png" alt=""/>
+            <p>品类齐全，轻松购物</p>
+        </li>
+    </ul>
+    <footer>
+        <div class="row">
+            <!--6个ul-->
+            <div class="col-2">
+                <h6 class="text-center">购物指南</h6>
+                <ul class="list-unstyled">
+                    <li class="text-center"><a href="" class="text-muted">购物流程</a></li>
+                    <li class="text-center"><a href="" class="text-muted">常见问题</a></li>
+                    <li class="text-center"><a href="" class="text-muted">联系客服</a></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <h6 class="text-center">支付方式</h6>
+                <ul class="list-unstyled">
+                    <li class="text-center"><a href="" class="text-muted">网上支付</a></li>
+                    <li class="text-center"><a href="" class="text-muted">礼品卡支付</a></li>
+                    <li class="text-center"><a href="" class="text-muted">货到付款</a></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <h6 class="text-center">配送方式</h6>
+                <ul class="list-unstyled">
+                    <li class="text-center"><a href="" class="text-muted">上门自提</a></li>
+                    <li class="text-center"><a href="" class="text-muted">配送到家</a></li>
+                    <li class="text-center"><a href="" class="text-muted">限时达</a></li>
+                    <li class="text-center"><a href="" class="text-muted">海外配送</a></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <h6 class="text-center">售后服务</h6>
+                <ul class="list-unstyled">
+                    <li class="text-center"><a href="" class="text-muted">售后政策</a></li>
+                    <li class="text-center"><a href="" class="text-muted">退款说明</a></li>
+                    <li class="text-center"><a href="" class="text-muted">价格保护</a></li>
+                    <li class="text-center"><a href="" class="text-muted">退/换货</a></li>
+                    <li class="text-center"><a href="" class="text-muted">取消订单</a></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <h6 class="text-center">商家服务</h6>
+                <ul class="list-unstyled">
+                    <li class="text-center"><a href="" class="text-muted">商家中心</a></li>
+                    <li class="text-center"><a href="" class="text-muted">运营服务</a></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <h6 class="text-center">特色服务</h6>
+                <ul class="list-unstyled">
+                    <li class="text-center"><a href="" class="text-muted">二手书商城</a></li>
+                    <li class="text-center"><a href="" class="text-muted">图书交流论坛</a></li>
+                    <li class="text-center"><a href="" class="text-muted">图书发布会</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- 版权信息-->
+        <div class="text-center">©2017 达内集团有限公司 版权所有 京ICP证xxxxxxxxxxx</div>
+    </footer>
 </div>
 </body>
 </html>
