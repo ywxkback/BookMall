@@ -20,15 +20,34 @@ r.get('/searchByKey', (request, response) => {
     var p = request.query.p;
     var key = request.query.key;
     key = '%' + key + '%';
-    var sql = 'SELECT * FROM `books` ' +
+    var sql1 = 'SELECT * FROM `books` ' +
         'WHERE bName LIKE ? OR bAuthor LIKE ? OR ' +
         'bDescription LIKE ? OR bTag LIKE ? OR ' +
         'bPublisher LIKE ?' +
         'LIMIT ?,?;';
-    pool.query(sql, [key, key, key, key, key, (p-1)*pageCount, p*pageCount], (err, result, fields) => {
+    var ans = {};
+    var queryCnt = 0;
+    pool.query(sql1, [key, key, key, key, key, (p-1)*pageCount, p*pageCount], (err, result, fields) => {
         if (err) throw err;
-        response.send({'list' : result});
+        queryCnt++;
+        ans.list = result;
+        if (queryCnt === 2) {
+            response.send(ans);
+        }
     })
+    var sql2 = 'SELECT count(*) FROM `books` ' +
+        'WHERE bName LIKE ? OR bAuthor LIKE ? OR ' +
+        'bDescription LIKE ? OR bTag LIKE ? OR ' +
+        'bPublisher LIKE ?;';
+    pool.query(sql, [key, key, key, key, key], (err, result, fields) => {
+        if (err) throw err;
+        queryCnt++;
+        ans.total = result;
+        if (queryCnt === 2) {
+            response.send(ans);
+        }
+    })
+
 });
 
 /* 标签搜索 */
