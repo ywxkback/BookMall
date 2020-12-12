@@ -47,6 +47,7 @@
 * 计算被选中的图书的价格 `calcTotalPrice`
 * 结算（删除被选中的图书、创建订单）`checkout`
 * 返回用户的购物车 `getUserCart`
+* 修改图书状态 `changeBookStatus`
 
 **图书模块** `book`
 
