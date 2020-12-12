@@ -3,6 +3,8 @@ const pool = require('../db/pool.js');
 
 const r = express.Router();
 
+const pageCount = 18;
+
 /* 返回所有图书 */
 r.get('/findAll', (request, response) => {
     var sql = 'SELECT * FROM `books`';
@@ -15,13 +17,15 @@ r.get('/findAll', (request, response) => {
 
 /* 关键字搜索 */
 r.get('/searchByKey', (request, response) => {
+    var p = request.query.p;
     var key = request.query.key;
     key = '%' + key + '%';
     var sql = 'SELECT * FROM `books` ' +
         'WHERE bName LIKE ? OR bAuthor LIKE ? OR ' +
         'bDescription LIKE ? OR bTag LIKE ? OR ' +
-        'bPublisher LIKE ?;';
-    pool.query(sql, [key, key, key, key, key], (err, result, fields) => {
+        'bPublisher LIKE ?' +
+        'LIMIT ?,?;';
+    pool.query(sql, [key, key, key, key, key, (p-1)*pageCount, p*pageCount], (err, result, fields) => {
         if (err) throw err;
         response.send({'list' : result});
     })
