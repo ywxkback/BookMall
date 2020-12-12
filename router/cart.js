@@ -108,6 +108,25 @@ r.post('/minusOneBook', (request, response) => {
     });
 });
 
+r.post('/changeBookStatus', (request, response) => {
+    var bId = request.body.bId;
+    var uId = request.session.uId;
+    var status = request.body.status;
+    // 判空
+    if (!uId) {
+        response.send({code: 201, msg: 'uId should not be empty.'});
+        return;
+    }
+    if (!bId) {
+        response.send({code: 202, msg: 'bId should not be empty.'});
+        return;
+    }
+    var sql = "UPDATE `cart` SET status=? WHERE uId=? AND bId=?";
+    pool.query(sql, [uId, bId, status], (err, result) => {
+        if (err) throw err;
+    })
+})
+
 r.post('/modifyBookNum', (request, response) => {
     var uId = request.session.uId;
     var bId = request.body.bId;
