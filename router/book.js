@@ -39,7 +39,7 @@ r.get('/searchByKey', (request, response) => {
         'WHERE bName LIKE ? OR bAuthor LIKE ? OR ' +
         'bDescription LIKE ? OR bTag LIKE ? OR ' +
         'bPublisher LIKE ?;';
-    pool.query(sql, [key, key, key, key, key], (err, result, fields) => {
+    pool.query(sql2, [key, key, key, key, key], (err, result, fields) => {
         if (err) throw err;
         queryCnt++;
         ans.total = result;
