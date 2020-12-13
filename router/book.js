@@ -7,10 +7,27 @@ const pageCount = 18;
 
 /* 返回所有图书 */
 r.get('/findAll', (request, response) => {
-    var sql = 'SELECT * FROM `books`';
-    pool.query(sql, (err, result, fields) => {
+    var p = request.query.p;
+    var ans = {"list" : null, "total" : 0};
+    var sql1 = 'SELECT * FROM `books` LIMIT ?,?';
+    var queryCnt = 0;
+    pool.query(sql1,[(p-1)*pageCount, p*pageCount], (err, result, fields) => {
         if (err) throw err;
-        response.send({'list' : result});
+        // response.send({'list' : result});
+       ans.list = result;
+       queryCnt++;
+       if (queryCnt === 2) {
+           response.send(ans);
+       }
+    });
+    var sql2 = "SELECT COUNT(*) AS total FROM `books`"
+    pool.query(sql2, (err, result, fields) => {
+        if (err) throw err;
+        ans.total = result[0].total;
+        queryCnt++;
+        if (queryCnt === 2) {
+            response.send(ans);
+        }
     })
 
 });
@@ -35,7 +52,7 @@ r.get('/searchByKey', (request, response) => {
             response.send(ans);
         }
     })
-    var sql2 = 'SELECT count(*) as total FROM `books` ' +
+    var sql2 = 'SELECT COUNT(*) as total FROM `books` ' +
         'WHERE bName LIKE ? OR bAuthor LIKE ? OR ' +
         'bDescription LIKE ? OR bTag LIKE ? OR ' +
         'bPublisher LIKE ?;';
@@ -52,13 +69,27 @@ r.get('/searchByKey', (request, response) => {
 
 /* 标签搜索 */
 r.get('/searchByTags', (request, response) => {
+    var p = request.query.p;
     var tagList = request.query.tagList.split(",");
-    // console.log(tagList);
-    var sql = "SELECT * FROM `books` WHERE bTag in (?)"
-    pool.query(sql, [tagList], (err, result) => {
+    var ans = {"list": [], "total": 0};
+    var queryCnt = 0;
+    var sql1 = "SELECT * FROM `books` WHERE bTag in (?) LIMIT ?,?";
+    pool.query(sql1, [tagList, (p-1)*pageCount, p*pageCount], (err, result) => {
         if (err) throw err;
-        // console.log(result);
-        response.send({'list' : result});
+        ans.list = result;
+        queryCnt++;
+        if (queryCnt === 2) {
+            response.send(ans);
+        }
+    });
+    var sql2 = "SELECT COUNT(*) AS total FROM `books` WHERE bTag in (?)";
+    pool.query(sql2, [tagList], (err, result) => {
+        if (err) throw err;
+        ans.total = result[0].total;
+        queryCnt++;
+        if (queryCnt === 2) {
+            response.send(ans);
+        }
     })
 })
 
