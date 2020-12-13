@@ -25,7 +25,7 @@ r.get('/searchByKey', (request, response) => {
         'bDescription LIKE ? OR bTag LIKE ? OR ' +
         'bPublisher LIKE ?' +
         'LIMIT ?,?;';
-    var ans = {};
+    var ans = {"list": [], "total": 0};
     var queryCnt = 0;
     pool.query(sql1, [key, key, key, key, key, (p-1)*pageCount, p*pageCount], (err, result, fields) => {
         if (err) throw err;
@@ -35,14 +35,14 @@ r.get('/searchByKey', (request, response) => {
             response.send(ans);
         }
     })
-    var sql2 = 'SELECT count(*) FROM `books` ' +
+    var sql2 = 'SELECT count(*) as total FROM `books` ' +
         'WHERE bName LIKE ? OR bAuthor LIKE ? OR ' +
         'bDescription LIKE ? OR bTag LIKE ? OR ' +
         'bPublisher LIKE ?;';
     pool.query(sql2, [key, key, key, key, key], (err, result, fields) => {
         if (err) throw err;
         queryCnt++;
-        ans.total = result;
+        ans.total = result[0].total;
         if (queryCnt === 2) {
             response.send(ans);
         }
