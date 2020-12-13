@@ -161,32 +161,13 @@ r.post('/getUserCart', (request, response) => {
 });
 
 r.post('/calcTotalPrice', (request, response) => {
-    var bIdList = request.body.bIdList.split(",");
-    var bNumList = request.body.bNumList.split(",");
-    var n = bIdList.length;
-    var sum = 0;
-    var sql = "SELECT * FROM `books` WHERE bId=?";
-    var pList = []
-    for (var i = 0; i < n; i++) {
-        pList.push(query(bIdList[i], bNumList[i]));
-    }
-    Promise.all(pList).then(data => {
-        for (var i = 0; i < data.length; i++) {
-            sum += data[i];
-        }
-        // console.log(sum);
-        response.send({ 'totalPrice' : sum});
-    });
-
-    function query(bId, bNum) {
-        return new Promise(function (resolve, reject) {
-            pool.query(sql, [bId], (err, result) => {
-                if (err) throw err;
-                result = JSON.parse(JSON.stringify(result));
-                resolve(result[0].bPrice * bNum);
-            })
-        });
-    }
+    var uId = request.session.uId;
+    var sql = "SELECT SUM(bNum * bPrice) FROM `books` as b, `cart` as c WHERE c.status=1 AND uId=? AND b.bId=c.bId";
+    pool.query(sql, [uId], (err, result) => {
+        if (err) throw err;
+        // console.log(result);
+        response.send({"totalPrice" : result});
+    })
 });
 
 module.exports = r;
