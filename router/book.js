@@ -105,7 +105,7 @@ r.get('/searchByTagsAndKeys', (request, response) => {
         'bDescription LIKE ? OR ' +
         'bPublisher LIKE ?) AND bTag IN (?)' +
         'LIMIT ?,?;';
-    pool.query(sql1, [tagList, (p-1)*pageCount, pageCount], (err, result) => {
+    pool.query(sql1, [key,key,key,key,tagList, (p-1)*pageCount, pageCount], (err, result) => {
         if (err) throw err;
         ans.list = result;
         queryCnt++;
@@ -117,7 +117,7 @@ r.get('/searchByTagsAndKeys', (request, response) => {
         'WHERE (bName LIKE ? OR bAuthor LIKE ? OR ' +
         'bDescription LIKE ? OR ' +
         'bPublisher LIKE ?) AND bTag IN (?);';
-    pool.query(sql2, [tagList], (err, result) => {
+    pool.query(sql2, [key,key,key,key,tagList], (err, result) => {
         if (err) throw err;
         ans.total = result[0].total;
         queryCnt++;
