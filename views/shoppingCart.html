@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../public/css/bootstrap.css">
+    <link rel="stylesheet" href="../public/css/other.css">
+    <script src="../public/js/jquery.min.js"></script>
+    <script src="../public/js/popper.min.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        <br>
+        <h4>&nbsp;&nbsp;购物车</h4>
+        <button class="btn btn-outline-info" onclick="testLogin()">登录</button>
+        <button class="btn btn-outline-info" onclick="showAllBooks()">显示购物车</button>
+        <div id="cart" class="container border">
+            <!--放购物车内容-->
+
+
+
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            //testSignUp();
+            //testLogin();
+            // testCart(39);
+            // testCart(58);
+            //testCart(99);
+            //showAllBooks();
+
+            selectAll();
+
+
+        });
+        function testSignUp() {
+            $.post('/user/userRegister',
+                {
+                    uName: "1325",
+                    uPwd: "1234",
+                    uPhone: "1234",
+                },
+                function(data){
+                    switch (data.code) {
+                        case 200:
+                            console.log('success');
+                            alert('注册成功')
+                            break;
+                        case 401:
+                            console.log('用户账号为空');
+                            break;
+                        case 402:
+                            console.log('用户名为空');
+                            break;
+                        case 403:
+                            console.log('密码为空');
+                            break;
+                        case 404:
+                            console.log('手机号码为空');
+                            break;
+                    }
+                }
+            );
+        }
+
+        function testLogin() {
+            $.post('/user/userLogin',
+                {
+                    uName: "jc",
+                    uPwd: "1234",
+                },
+                function(result){
+
+                    console.log(result.code);
+                    switch (result.code) {
+
+                        case 300:
+                            console.log('登录成功');
+                            break;
+                        case 401:
+                            console.log('用户账号为空');
+                            break;
+                        case 402:
+                            console.log('用户名为空');
+                            break;
+                        case 403:
+                            console.log('密码为空');
+                            break;
+                        case 404:
+                            console.log('手机号码为空');
+                            break;
+                    }
+                }
+            );
+
+        }
+
+        function testCart(bookId) {
+            $.post('/cart/addBook',
+                {
+                    bId: bookId
+                },
+                function(result){
+                console.log("123");
+                    switch (result.code) {
+                        case 201:
+                            console.log('uId is null');
+                            break;
+                        case 202:
+                            console.log('bId is null');
+                            break;
+                        case 100:
+                            console.log('成功，加入一本书到用户的购物车');
+                            alert('加入成功');
+                            break;
+                        case 101:
+                            console.log('成功，图书已存在，数量+1');
+                            alert('加入成功');
+                    }
+                }
+            );
+        }
+
+        function showAllBooks() {   //显示所有图书
+            $.ajax({
+                method: 'POST',
+                url: '/cart/getUserCart',
+                //data: 'uId=${11}',
+                success: function (data){
+
+                    let booksList = data.booksList;
+                    console.log(data);
+                    let cartBooks = '<div class="row  border" style="line-height: 3.5">\n' +
+                        '                <div class="col-sm-1">\n' +
+                        '                    <div>\n' +
+                        '                        <input id="selectAll_1" name="checkbox" type="checkbox" onclick="selectAll()">\n' +
+                        '                        &nbsp;&nbsp;全选\n' +
+                        '                    </div>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-4 text-center text-center">\n' +
+                        '                    商品信息\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-2 text-center text-center">\n' +
+                        '                    单价\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-3 text-center text-center">\n' +
+                        '                    数量\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-2 text-center text-center">\n' +
+                        '                    金额\n' +
+                        '                </div>\n' +
+                        '            </div>';
+
+                    for(let i = 0; i < booksList.length; i++){
+                        let bchecked = booksList[i].status ? "checked" : "";
+                        let bName = booksList[i].bName;
+                        let bNum = booksList[i].bNum;
+                        let bPrice = booksList[i].bPrice;
+                        let bPriceSum = bNum * bPrice;
+
+                        cartBooks += '<br>\n' +
+                            '            <div class="row border">\n' +
+                            '                <div class="col-sm-1">\n' +
+                            '                    <div class="_middle">\n' +
+                            '                        <input type="checkbox"  name="checkbox" '+bchecked+'>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-4">\n' +
+                            '                    <div  class="container">\n' +
+                            '                        <div class="row">\n' +
+                            '                            <div class="col-sm-3">\n' +
+                            '                                <img src="../public/img/' + booksList[i].bUri + '" class="cartimg" alt="书本图片">\n' +
+                            '                            </div>\n' +
+                            '                            <div class="col-sm-9">\n' +
+                            '                                <a href="#">&nbsp;&nbsp;' + bName +'</a>\n' +
+                            '                            </div>\n' +
+                            '                        </div>\n' +
+                            '\n' +
+                            '\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-2 text-center">\n' +
+                            '                    <div  class="_middle">\n' +
+                            '                        <span class="text-dark card-text font-weight-bold">￥</span>\n' +
+                            '                        <span class="text-dark card-text font-weight-bold">'+bPrice+'</span>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-3 text-center">\n' +
+                            '                    <div class="text-center  _middle">\n' +
+                            '                        <a href="" class="btn btn-light changenumbtn">－</a>\n' +
+                            '                        <input type="text" value="'+bNum+'" class="smallinput">\n' +
+                            '                        <a href="" class="btn btn-light changenumbtn">＋</a>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-2 text-center">\n' +
+                            '                    <div  class="_middle">\n' +
+                            '                        <span class="text-danger card-text font-weight-bold">￥</span>\n' +
+                            '                        <span class="text-danger card-text font-weight-bold">'+bPriceSum+'</span>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '            </div>'
+                    }
+                    let cartSum = getSum();
+                    cartBooks += '<div class="row border"  style="line-height: 3.5">\n' +
+                        '                <div class="col-sm-1">\n' +
+                        '                    <div>\n' +
+                        '                        <input id="selectAll_2" type="checkbox"  name="checkbox" onclick="selectAll()">\n' +
+                        '                        &nbsp;&nbsp;全选\n' +
+                        '                    </div>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-1 text-center text-center">\n' +
+                        '                    <a class="btn btn-light">删除</a>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-5 text-center text-center">\n' +
+                        '\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-3 text-center text-center">\n' +
+                        '                    <div  class="_middle">\n' +
+                        '                        <span class="text-dark card-text font-weight-bold">合计&nbsp;:</span>\n' +
+                        '                        <span class="text-danger card-text font-weight-bold">&nbsp;&nbsp;￥</span>\n' +
+                        '                        <span class="text-danger card-text font-weight-bold" id="cartSum"></span>\n' +
+                        '                    </div>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-2 text-center text-center">\n' +
+                        '                    <a href="#" class="btn btn-outline-danger jiesuan">\n' +
+                        '                        结算\n' +
+                        '                    </a>\n' +
+                        '                </div>\n' +
+                        '            </div>';
+                    $("#cart").html(cartBooks);
+                }
+            });
+        }
+
+        function selectAll() {
+            //全选
+            $("#selectAll_1").click(function () {
+                console.log("on1");
+                if($(this).is(':checked')){
+                    console.log("you invoke click function");
+                    //把所有复选框选中
+                    $('input:checkbox').each(function() {
+                        $(this).prop('checked', true);
+                    });
+                }else{
+                    $('input:checkbox').each(function() {
+                        $(this).prop('checked', false);
+                    });
+                }
+            });
+            $("#selectAll_2").on("click",function(){
+                console.log("on2");
+                if($(this).is(':checked')){
+                    //把所有复选框选中
+                    $('input:checkbox').each(function() {
+                        $(this).prop('checked', true);
+                    });
+                }else{
+                    $('input:checkbox').each(function() {
+                        $(this).prop('checked', false);
+                    });
+                }
+            });
+        }
+
+        function selectBook() {
+
+        }
+
+        function getSum() {
+            $.post('/cart/calcTotalPrice',
+                {},  (data) => {
+                    console.log(data);
+                    $('#cartSum').text(data.totalPrice)
+                }
+            )
+        }
+
+
+
+
+
+    </script>
+</body>
+</html>
+
+<!--<div class="row  border" style="line-height: 3.5">-->
+<!--    <div class="col-sm-1">-->
+<!--        <div>-->
+<!--            <input type="checkbox">-->
+<!--            &nbsp;&nbsp;全选-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-4 text-center text-center">-->
+<!--        商品信息-->
+<!--    </div>-->
+<!--    <div class="col-sm-2 text-center text-center">-->
+<!--        单价-->
+<!--    </div>-->
+<!--    <div class="col-sm-3 text-center text-center">-->
+<!--        数量-->
+<!--    </div>-->
+<!--    <div class="col-sm-2 text-center text-center">-->
+<!--        金额-->
+<!--    </div>-->
+<!--</div>-->
+<!--<br>-->
+<!--<div class="row border">-->
+<!--    <div class="col-sm-1">-->
+<!--        <div class="_middle">-->
+<!--            <input type="checkbox">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-4">-->
+<!--        <div  class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-sm-3">-->
+<!--                    <img src="../public/img/cartoon_1.jpg" class="cartimg" alt="书本图片">-->
+<!--                </div>-->
+<!--                <div class="col-sm-9">-->
+<!--                    <a href="#">&nbsp;&nbsp;书本名</a>-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-2 text-center">-->
+<!--        <div  class="_middle">-->
+<!--            <span class="text-dark card-text font-weight-bold">￥</span>-->
+<!--            <span class="text-dark card-text font-weight-bold">89.00</span>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-3 text-center">-->
+<!--        <div class="text-center  _middle">-->
+<!--            <a href="" class="btn btn-light changenumbtn">－</a>-->
+<!--            <input type="text" value="1" class="smallinput">-->
+<!--            <a href="" class="btn btn-light changenumbtn">＋</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-2 text-center">-->
+<!--        <div  class="_middle">-->
+<!--            <span class="text-danger card-text font-weight-bold">￥</span>-->
+<!--            <span class="text-danger card-text font-weight-bold">89.00</span>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<br>-->
+<!--<div class="row border">-->
+<!--    <div class="col-sm-1">-->
+<!--        <div class="_middle">-->
+<!--            <input type="checkbox">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-4">-->
+<!--        <div  class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-sm-3">-->
+<!--                    <img src="../public/img/cartoon_1.jpg" class="cartimg" alt="书本图片">-->
+<!--                </div>-->
+<!--                <div class="col-sm-9">-->
+<!--                    <a href="#">&nbsp;&nbsp;书本名</a>-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-2 text-center">-->
+<!--        <div  class="_middle">-->
+<!--            <span class="text-dark card-text font-weight-bold">￥</span>-->
+<!--            <span class="text-dark card-text font-weight-bold">89.00</span>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-3 text-center">-->
+<!--        <div class="text-center  _middle">-->
+<!--            <a href="" class="btn btn-light changenumbtn">－</a>-->
+<!--            <input type="text" value="1" class="smallinput">-->
+<!--            <a href="" class="btn btn-light changenumbtn">＋</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-2 text-center">-->
+<!--        <div  class="_middle">-->
+<!--            <span class="text-danger card-text font-weight-bold">￥</span>-->
+<!--            <span class="text-danger card-text font-weight-bold">89.00</span>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div class="row border"  style="line-height: 3.5">-->
+<!--    <div class="col-sm-1">-->
+<!--        <div>-->
+<!--            <input type="checkbox">-->
+<!--            &nbsp;&nbsp;全选-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-1 text-center text-center">-->
+<!--        <a>删除</a>-->
+<!--    </div>-->
+<!--    <div class="col-sm-5 text-center text-center">-->
+
+<!--    </div>-->
+<!--    <div class="col-sm-3 text-center text-center">-->
+<!--        <div  class="_middle">-->
+<!--            <span class="text-dark card-text font-weight-bold">合计&nbsp;:</span>-->
+<!--            <span class="text-danger card-text font-weight-bold">&nbsp;&nbsp;￥</span>-->
+<!--            <span class="text-danger card-text font-weight-bold">89.00</span>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-2 text-center text-center">-->
+<!--        <a href="#" class="btn btn-outline-danger jiesuan">-->
+<!--            结算-->
+<!--        </a>-->
+<!--    </div>-->
+<!--</div>-->

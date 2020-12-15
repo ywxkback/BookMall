@@ -55,6 +55,6 @@ app.use('/public', express.static(__dirname + '/public'))
 
 /* 监听 */
 app.listen(port, () => {
-    console.log(`Home: http://localhost:${port}/index.html`)
+    console.log(`Home: http://localhost:${port}/shoppingCart.html`)
 })
 
