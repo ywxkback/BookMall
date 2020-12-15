@@ -5,7 +5,7 @@ const r = express.Router();
 
 r.post('/addBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -47,7 +47,7 @@ r.post('/addBook', (request, response) => {
 
 r.post('/deleteBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -67,7 +67,7 @@ r.post('/deleteBook', (request, response) => {
 
 r.post('/addOneBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -86,7 +86,7 @@ r.post('/addOneBook', (request, response) => {
 
 r.post('/minusOneBook', (request, response) => {
     var bId = request.body.bId;
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -108,8 +108,27 @@ r.post('/minusOneBook', (request, response) => {
     });
 });
 
+r.post('/changeBookStatus', (request, response) => {
+    var bId = request.body.bId;
+    var uId = request.session.uId;
+    var status = request.body.status;
+    // 判空
+    if (!uId) {
+        response.send({code: 201, msg: 'uId should not be empty.'});
+        return;
+    }
+    if (!bId) {
+        response.send({code: 202, msg: 'bId should not be empty.'});
+        return;
+    }
+    var sql = "UPDATE `cart` SET status=? WHERE uId=? AND bId=?";
+    pool.query(sql, [uId, bId, status], (err, result) => {
+        if (err) throw err;
+    })
+})
+
 r.post('/modifyBookNum', (request, response) => {
-    var uId = request.body.uId;
+    var uId = request.session.uId;
     var bId = request.body.bId;
     var bNum = request.body.bNum;
     // 判空
@@ -129,7 +148,7 @@ r.post('/modifyBookNum', (request, response) => {
 });
 
 r.post('/getUserCart', (request, response) => {
-    var uId = req.session.uId;
+    var uId = request.session.uId;
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
         return;
@@ -142,32 +161,13 @@ r.post('/getUserCart', (request, response) => {
 });
 
 r.post('/calcTotalPrice', (request, response) => {
-    var bIdList = request.body.bIdList.split(",");
-    var bNumList = request.body.bNumList.split(",");
-    var n = bIdList.length;
-    var sum = 0;
-    var sql = "SELECT * FROM `books` WHERE bId=?";
-    var pList = []
-    for (var i = 0; i < n; i++) {
-        pList.push(query(bIdList[i], bNumList[i]));
-    }
-    Promise.all(pList).then(data => {
-        for (var i = 0; i < data.length; i++) {
-            sum += data[i];
-        }
-        // console.log(sum);
-        response.send({ 'totalPrice' : sum});
-    });
-
-    function query(bId, bNum) {
-        return new Promise(function (resolve, reject) {
-            pool.query(sql, [bId], (err, result) => {
-                if (err) throw err;
-                result = JSON.parse(JSON.stringify(result));
-                resolve(result[0].bPrice * bNum);
-            })
-        });
-    }
+    var uId = request.session.uId;
+    var sql = "SELECT SUM(bNum * bPrice) FROM `books` as b, `cart` as c WHERE c.status=1 AND uId=? AND b.bId=c.bId";
+    pool.query(sql, [uId], (err, result) => {
+        if (err) throw err;
+        // console.log(result);
+        response.send({"totalPrice" : result});
+    })
 });
 
 module.exports = r;

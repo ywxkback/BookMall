@@ -8,10 +8,11 @@ const pageCount = 18;
 /* 返回所有图书 */
 r.get('/findAll', (request, response) => {
     var p = request.query.p;
-    var ans = {"list" : null, "total" : 0};
+    var ans = { "list": null, "total": 0 };
     var sql1 = 'SELECT * FROM `books` LIMIT ?,?';
     var queryCnt = 0;
-    pool.query(sql1,[(p-1)*pageCount, pageCount], (err, result, fields) => {
+    pool.query(sql1, [(p - 1) * pageCount, pageCount], (err, result, fields) => {
+
         if (err) throw err;
         // response.send({'list' : result});
         ans.list = result;
@@ -32,6 +33,18 @@ r.get('/findAll', (request, response) => {
 
 });
 
+/* 图书详情 */
+r.get('/showDetail', (request, response) => {
+    var bId = request.query.bId;
+    var sql = "SELECT * FROM `books` where bId =?"
+    pool.query(sql, [bId], (err, result) => {
+        if (err) throw err;
+        // console.log(result);
+        response.send({result});
+    })
+})
+
+
 /* 关键字搜索 */
 r.get('/searchByKey', (request, response) => {
     var p = request.query.p;
@@ -42,9 +55,9 @@ r.get('/searchByKey', (request, response) => {
         'bDescription LIKE ? OR bTag LIKE ? OR ' +
         'bPublisher LIKE ?' +
         'LIMIT ?,?;';
-    var ans = {"list": [], "total": 0};
+    var ans = { "list": [], "total": 0 };
     var queryCnt = 0;
-    pool.query(sql1, [key, key, key, key, key, (p-1)*pageCount, pageCount], (err, result, fields) => {
+    pool.query(sql1, [key, key, key, key, key, (p - 1) * pageCount, pageCount], (err, result, fields) => {
         if (err) throw err;
         queryCnt++;
         ans.list = result;
@@ -71,10 +84,10 @@ r.get('/searchByKey', (request, response) => {
 r.get('/searchByTags', (request, response) => {
     var p = request.query.p;
     var tagList = request.query.tagList.split(",");
-    var ans = {"list": [], "total": 0};
+    var ans = { "list": [], "total": 0 };
     var queryCnt = 0;
     var sql1 = "SELECT * FROM `books` WHERE bTag IN (?) LIMIT ?,?";
-    pool.query(sql1, [tagList, (p-1)*pageCount, pageCount], (err, result) => {
+    pool.query(sql1, [tagList, (p - 1) * pageCount, pageCount], (err, result) => {
         if (err) throw err;
         ans.list = result;
         queryCnt++;
@@ -98,18 +111,17 @@ r.get('/searchByTagsAndKeys', (request, response) => {
     var p = request.query.p;
     var tagList = request.query.tagList.split(",");
     var key = '%' + request.query.key + '%';
-    var ans = {"list": [], "total": 0};
+    var ans = { "list": [], "total": 0 };
     var queryCnt = 0;
     var sql1 = 'SELECT * FROM `books` ' +
         'WHERE (bName LIKE ? OR bAuthor LIKE ? OR ' +
         'bDescription LIKE ? OR ' +
         'bPublisher LIKE ?) AND bTag IN (?)' +
         'LIMIT ?,?;';
-    pool.query(sql1, [key, key, key, key, tagList, (p-1)*pageCount, pageCount], (err, result) => {
+    pool.query(sql1, [key, key, key, key, tagList, (p - 1) * pageCount, pageCount], (err, result) => {
         if (err) throw err;
         ans.list = result;
         queryCnt++;
-        //console.log(result.length);
         if (queryCnt === 2) {
             response.send(ans);
         }
@@ -122,11 +134,10 @@ r.get('/searchByTagsAndKeys', (request, response) => {
         if (err) throw err;
         ans.total = result[0].total;
         queryCnt++;
-        //console.log(result[0].length);
         if (queryCnt === 2) {
             response.send(ans);
         }
-    });
+    })
 })
 
 module.exports = r;

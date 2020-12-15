@@ -51,8 +51,6 @@ r.post('/createOrder', (request, response) => {
 r.get('/deleteOrder', (request, response) => {
     var uId = request.session.uId;
     var oId = request.query.oId;
-    console.log(uId)
-    console.log(oId)
     var sql = 'DELETE FROM orderbook WHERE oId = ?';
     pool.query(sql,[oId],(err,result)=>{
         if(err) throw err;
