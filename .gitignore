@@ -1,3 +1,4 @@
 *.xml
 db/pool.js
+*.jpg
 .idea/temp.iml

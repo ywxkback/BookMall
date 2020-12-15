@@ -12,6 +12,7 @@ r.get('/findAll', (request, response) => {
     var sql1 = 'SELECT * FROM `books` LIMIT ?,?';
     var queryCnt = 0;
     pool.query(sql1, [(p - 1) * pageCount, pageCount], (err, result, fields) => {
+
         if (err) throw err;
         // response.send({'list' : result});
         ans.list = result;
