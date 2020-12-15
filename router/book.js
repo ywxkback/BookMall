@@ -32,6 +32,18 @@ r.get('/findAll', (request, response) => {
 
 });
 
+/* 图书详情 */
+r.get('/showDetail', (request, response) => {
+    var bId = request.query.bId;
+    var sql = "SELECT * FROM `books` where bId =?"
+    pool.query(sql, [bId], (err, result) => {
+        if (err) throw err;
+        // console.log(result);
+        response.send({"bookDetail" : result});
+    })
+})
+
+
 /* 关键字搜索 */
 r.get('/searchByKey', (request, response) => {
     var p = request.query.p;
