@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="css/bootstrap.css"/>
     <link rel="stylesheet" href="css/index.css"/>
     <link rel="stylesheet" href="css/product.css"/>
-<!--    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/product/">-->
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -17,29 +16,8 @@
                 $(".dropdown-toggle").dropdown('toggle');
             });
 
-            //书本展示框
-            $.ajax({
-                method: 'GET',
-                url: 'http://127.0.0.1:8080/book/findAll',
-                success: function (data){
-                    //console.log(data.list.length);
-                    let bookCards = $("#bookDisplayPanel").find(".card");
-                    let set = new Set();
-                    let rand;
-                    for(let i = 0; i < bookCards.length; i++){
-                        let bookImg = bookCards.eq(i).find(".book-img");
-                        let bookId = bookCards.eq(i).find("p:hidden");
-                        let bookName = bookCards.eq(i).find(".book-title");
-                        let bookAuthor = bookCards.eq(i).find(".book-author");
-                        while(set.has(rand = Math.floor((Math.random() * 253))));
-                        set.add(rand);
-                        bookImg.attr("src", "/public/img/bookCover/" + data.list[rand].bUri);
-                        bookId.html(data.list[rand].bId);
-                        bookName.html(data.list[rand].bName);
-                        bookAuthor.html(data.list[rand].bAuthor);
-                    }
-                }
-            });
+            //书本展示
+            showBooks();
 
             //搜索栏
             $("#searchBtn").click(function(){
@@ -52,21 +30,67 @@
             });
 
         });
+        
+        function showBooks() {
+            //console.log("showBooks called");
+            let panels = $("div[id^='bookDisplayPanel']");
+            //console.log(panels);
+            let set = new Set();
+            let rand;
+            panels.each(function(){
+                while(set.has(rand = Math.floor((Math.random() * 13) + 1)));
+                set.add(rand);
+                let books = '<p>haha</p>';
+                $.ajax({
+                    method: 'GET',
+                    data:{
+                        'p': rand
+                    },
+                    url: 'http://127.0.0.1:8080/book/findAll',
+                    async: false,
+                    success: function (data){
+                        //console.log(data.list.length);
+                        books = '<div class="row">';
+                        for(let i = 0; i < 9; i++){
+                            books += '<div class="col-md-4">\n' +
+                                '                <div class="card mb-4 shadow-sm">\n' +
+                                '                    <img src="/public/img/bookCover/' + data.list[i].bUri + '" alt="" class="book-img">\n' +
+                                '                    <div class="card-body-book">\n' +
+                                '                        <div class="book-info">\n' +
+                                '                            <p hidden="hidden">' + data.list[i].bId + '</p>\n' +
+                                '                            <p class="book-title">' + data.list[i].bName + '</p>\n' +
+                                '                            <p class="book-author">' + data.list[i].bAuthor + '</p>\n' +
+                                '                        </div>\n' +
+                                '                        <div class="d-flex justify-content-between align-items-center">\n' +
+                                '                            <div class="btn-group">\n' +
+                                '                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="watchDetail(this)">查看</button>\n' +
+                                '                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addCart(this)">加入购物车</button>\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                    </div>\n' +
+                                '                </div>\n' +
+                                '            </div>';
+                        }
+                        books += '</div>';
+                    }
+                });
+                $(this).html(books);
+            });
+        }
 
         //转到图书详情页面（未完成）
         function watchDetail(obj){
-            let bookName = $(obj).parents(".card-body-book").find(".book-title").html();
-            $(location).attr('href', encodeURI('http://localhost:8080/' + bookName));
+            let bId = $(obj).parents(".card-body-book").find("p:hidden").html();
+            $(location).attr('href', 'http://localhost:8080/页面名称?' + bId);
         }
 
         //将图书加入购物车
         function addCart(obj) {
             let bookId = $(obj).parents(".card-body-book").find("p:hidden").html();
+            console.log(bookId);
             //console.log(bookId);
-            let userId;
             $.post('http://127.0.0.1:8080/cart/addBook',
                     {
-                        uId: userId,
                         bId: bookId
                     },
                     function(result, state){
@@ -190,10 +214,31 @@
     <!-- 图书展示区 -->
     <div class="border-bottom">
 <!--        <img src="img/index/computer_icon.png" alt=""/>-->
-        <span class="title_font">精品图书区</span>
+        <span class="title_font">畅销图书</span>
     </div>
     <!--    <div class="album py-5 bg-light">-->
-    <div class="container" id="bookDisplayPanel">
+    <div class="container" id="bookDisplayPanel1"></div>
+
+    <div class="border-bottom">
+        <!--        <img src="img/index/computer_icon.png" alt=""/>-->
+        <span class="title_font">限时折扣</span>
+    </div>
+    <!--    <div class="album py-5 bg-light">-->
+    <div class="container" id="bookDisplayPanel2"></div>
+
+    <div class="border-bottom">
+        <!--        <img src="img/index/computer_icon.png" alt=""/>-->
+        <span class="title_font">最新上架</span>
+    </div>
+    <!--    <div class="album py-5 bg-light">-->
+    <div class="container" id="bookDisplayPanel3"></div>
+
+    <div class="border-bottom">
+        <!--        <img src="img/index/computer_icon.png" alt=""/>-->
+        <span class="title_font">书友推荐</span>
+    </div>
+    <!--    <div class="album py-5 bg-light">-->
+    <div class="container" id="bookDisplayPanel4">
         <div class="row">
             <div class="col-md-4">
                 <div class="card mb-4 shadow-sm">
@@ -370,7 +415,6 @@
             </div>
         </div>
     </div>
-
     <!-- 分割线 -->
     <hr color="#ffffff" />
 
