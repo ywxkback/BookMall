@@ -39,7 +39,7 @@ r.get('/showDetail', (request, response) => {
     pool.query(sql, [bId], (err, result) => {
         if (err) throw err;
         // console.log(result);
-        response.send({"bookDetail" : result});
+        response.send({result});
     })
 })
 
