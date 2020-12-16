@@ -167,7 +167,7 @@
                     let cartBooks = '<div class="row  border" style="line-height: 3.5">\n' +
                         '                <div class="col-sm-1">\n' +
                         '                    <div>\n' +
-                        '                        <input id="selectAll_1" name="checkbox" type="checkbox" onclick="selectAll(this.id)">\n' +
+                        '                        <input id="selectAll_1" name="checkall" type="checkbox" onclick="selectAll(this.id)">\n' +
                         '                        &nbsp;&nbsp;全选\n' +
                         '                    </div>\n' +
                         '                </div>\n' +
@@ -238,7 +238,7 @@
                     cartBooks += '<div class="row border"  style="line-height: 3.5">\n' +
                         '                <div class="col-sm-1">\n' +
                         '                    <div>\n' +
-                        '                        <input id="selectAll_2" type="checkbox"  name="checkbox" onclick="selectAll(this.id)">\n' +
+                        '                        <input id="selectAll_2" type="checkbox"  name="checkall" onclick="selectAll(this.id)">\n' +
                         '                        &nbsp;&nbsp;全选\n' +
                         '                    </div>\n' +
                         '                </div>\n' +
@@ -274,12 +274,26 @@
                     //把所有复选框选中
                     $('input:checkbox').each(function() {
                         $(this).prop('checked', true);
+                        if(this.id === "selectAll_2" || this.id === "selectAll_1"){
+                            console.log("hahhahhha");
+                        }
+                        else{
+                            changeStatus(this.name, 1);
+                            //selectBook(this.id, this.name);
+                        }
 
                     });
                 }else{
                     $('input:checkbox').each(function() {
                         $(this).prop('checked', false);
-
+                        //changeStatus(this.name, 0);
+                        if(this.id === "selectAll_2" || this.id === "selectAll_1"){
+                            console.log("hahhahhha");
+                        }
+                        else{
+                            changeStatus(this.name, 0);
+                            //selectBook(this.id, this.name);
+                        }
                     });
                 }
             });
@@ -335,132 +349,3 @@
     </script>
 </body>
 </html>
-
-<!--<div class="row  border" style="line-height: 3.5">-->
-<!--    <div class="col-sm-1">-->
-<!--        <div>-->
-<!--            <input type="checkbox">-->
-<!--            &nbsp;&nbsp;全选-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-4 text-center text-center">-->
-<!--        商品信息-->
-<!--    </div>-->
-<!--    <div class="col-sm-2 text-center text-center">-->
-<!--        单价-->
-<!--    </div>-->
-<!--    <div class="col-sm-3 text-center text-center">-->
-<!--        数量-->
-<!--    </div>-->
-<!--    <div class="col-sm-2 text-center text-center">-->
-<!--        金额-->
-<!--    </div>-->
-<!--</div>-->
-<!--<br>-->
-<!--<div class="row border">-->
-<!--    <div class="col-sm-1">-->
-<!--        <div class="_middle">-->
-<!--            <input type="checkbox">-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-4">-->
-<!--        <div  class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-sm-3">-->
-<!--                    <img src="../public/img/cartoon_1.jpg" class="cartimg" alt="书本图片">-->
-<!--                </div>-->
-<!--                <div class="col-sm-9">-->
-<!--                    <a href="#">&nbsp;&nbsp;书本名</a>-->
-<!--                </div>-->
-<!--            </div>-->
-
-
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-2 text-center">-->
-<!--        <div  class="_middle">-->
-<!--            <span class="text-dark card-text font-weight-bold">￥</span>-->
-<!--            <span class="text-dark card-text font-weight-bold">89.00</span>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-3 text-center">-->
-<!--        <div class="text-center  _middle">-->
-<!--            <a href="" class="btn btn-light changenumbtn">－</a>-->
-<!--            <input type="text" value="1" class="smallinput">-->
-<!--            <a href="" class="btn btn-light changenumbtn">＋</a>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-2 text-center">-->
-<!--        <div  class="_middle">-->
-<!--            <span class="text-danger card-text font-weight-bold">￥</span>-->
-<!--            <span class="text-danger card-text font-weight-bold">89.00</span>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<br>-->
-<!--<div class="row border">-->
-<!--    <div class="col-sm-1">-->
-<!--        <div class="_middle">-->
-<!--            <input type="checkbox">-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-4">-->
-<!--        <div  class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-sm-3">-->
-<!--                    <img src="../public/img/cartoon_1.jpg" class="cartimg" alt="书本图片">-->
-<!--                </div>-->
-<!--                <div class="col-sm-9">-->
-<!--                    <a href="#">&nbsp;&nbsp;书本名</a>-->
-<!--                </div>-->
-<!--            </div>-->
-
-
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-2 text-center">-->
-<!--        <div  class="_middle">-->
-<!--            <span class="text-dark card-text font-weight-bold">￥</span>-->
-<!--            <span class="text-dark card-text font-weight-bold">89.00</span>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-3 text-center">-->
-<!--        <div class="text-center  _middle">-->
-<!--            <a href="" class="btn btn-light changenumbtn">－</a>-->
-<!--            <input type="text" value="1" class="smallinput">-->
-<!--            <a href="" class="btn btn-light changenumbtn">＋</a>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-2 text-center">-->
-<!--        <div  class="_middle">-->
-<!--            <span class="text-danger card-text font-weight-bold">￥</span>-->
-<!--            <span class="text-danger card-text font-weight-bold">89.00</span>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<div class="row border"  style="line-height: 3.5">-->
-<!--    <div class="col-sm-1">-->
-<!--        <div>-->
-<!--            <input type="checkbox">-->
-<!--            &nbsp;&nbsp;全选-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-1 text-center text-center">-->
-<!--        <a>删除</a>-->
-<!--    </div>-->
-<!--    <div class="col-sm-5 text-center text-center">-->
-
-<!--    </div>-->
-<!--    <div class="col-sm-3 text-center text-center">-->
-<!--        <div  class="_middle">-->
-<!--            <span class="text-dark card-text font-weight-bold">合计&nbsp;:</span>-->
-<!--            <span class="text-danger card-text font-weight-bold">&nbsp;&nbsp;￥</span>-->
-<!--            <span class="text-danger card-text font-weight-bold">89.00</span>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-sm-2 text-center text-center">-->
-<!--        <a href="#" class="btn btn-outline-danger jiesuan">-->
-<!--            结算-->
-<!--        </a>-->
-<!--    </div>-->
-<!--</div>-->
