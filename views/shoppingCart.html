@@ -66,7 +66,7 @@
             //testCart(99);
             //showAllBooks();
 
-            selectAll();
+            //selectAll();
 
 
         });
@@ -107,10 +107,7 @@
                     uPwd: "1234",
                 },
                 function(result){
-
-                    console.log(result.code);
                     switch (result.code) {
-
                         case 300:
                             console.log('登录成功');
                             break;
@@ -170,7 +167,7 @@
                     let cartBooks = '<div class="row  border" style="line-height: 3.5">\n' +
                         '                <div class="col-sm-1">\n' +
                         '                    <div>\n' +
-                        '                        <input id="selectAll_1" name="checkbox" type="checkbox" onclick="selectAll()">\n' +
+                        '                        <input id="selectAll_1" name="checkbox" type="checkbox" onclick="selectAll(this.id)">\n' +
                         '                        &nbsp;&nbsp;全选\n' +
                         '                    </div>\n' +
                         '                </div>\n' +
@@ -194,12 +191,12 @@
                         let bNum = booksList[i].bNum;
                         let bPrice = booksList[i].bPrice;
                         let bPriceSum = bNum * bPrice;
-
+                        let bId = booksList[i].bId;
                         cartBooks += '<br>\n' +
                             '            <div class="row border">\n' +
                             '                <div class="col-sm-1">\n' +
                             '                    <div class="_middle">\n' +
-                            '                        <input type="checkbox"  name="checkbox" '+bchecked+'>\n' +
+                            '                        <input type="checkbox" id="cartBook_'+i+'" name="'+bId+'" '+bchecked+' onclick="selectBook(this.id,'+bId+')">\n' +
                             '                    </div>\n' +
                             '                </div>\n' +
                             '                <div class="col-sm-4">\n' +
@@ -241,7 +238,7 @@
                     cartBooks += '<div class="row border"  style="line-height: 3.5">\n' +
                         '                <div class="col-sm-1">\n' +
                         '                    <div>\n' +
-                        '                        <input id="selectAll_2" type="checkbox"  name="checkbox" onclick="selectAll()">\n' +
+                        '                        <input id="selectAll_2" type="checkbox"  name="checkbox" onclick="selectAll(this.id)">\n' +
                         '                        &nbsp;&nbsp;全选\n' +
                         '                    </div>\n' +
                         '                </div>\n' +
@@ -269,53 +266,71 @@
             });
         }
 
-        function selectAll() {
+        function selectAll(selectAllId) {
             //全选
-            $("#selectAll_1").click(function () {
-                console.log("on1");
-                if($(this).is(':checked')){
-                    console.log("you invoke click function");
-                    //把所有复选框选中
-                    $('input:checkbox').each(function() {
-                        $(this).prop('checked', true);
-                    });
-                }else{
-                    $('input:checkbox').each(function() {
-                        $(this).prop('checked', false);
-                    });
-                }
-            });
-            $("#selectAll_2").on("click",function(){
-                console.log("on2");
+            selectAllId = "#"+selectAllId;
+            $(selectAllId).change(function () {
                 if($(this).is(':checked')){
                     //把所有复选框选中
                     $('input:checkbox').each(function() {
                         $(this).prop('checked', true);
+
                     });
                 }else{
                     $('input:checkbox').each(function() {
                         $(this).prop('checked', false);
+
                     });
                 }
             });
         }
 
-        function selectBook() {
+        function selectBook(checkBoxId,cartBookId) {
+            let checkBoxId_ = "#"+checkBoxId;
+            console.log(checkBoxId_);
+            console.log(cartBookId);
+            $(checkBoxId_).on("change",function(){
+                if($(this).is(':checked')){
+                    changeStatus(cartBookId, 1);
+                }
+                else{
+                    changeStatus(cartBookId, 0);
+                }
+            });
+        }
 
+        function changeStatus(cartBookId, status) {
+            //修改数据库某书的选中状态
+            $.post('/cart/changeBookStatus',
+                {
+                    bId: cartBookId,
+                    status: status
+                },
+                function(result){
+                    console.log(result.code);
+                    switch (result.code) {
+                        case 201:
+                            console.log('uId should not be empty');
+                            break;
+                        case 202:
+                            console.log('bId should not be empty.');
+                            break;
+                        default:
+                            console.log('修改状态为'+status);
+                            break;
+                    }
+                }
+            );
         }
 
         function getSum() {
             $.post('/cart/calcTotalPrice',
                 {},  (data) => {
-                    console.log(data);
-                    $('#cartSum').text(data.totalPrice)
+                    console.log(data.totalPrice[0].totalPrice);
+                    $('#cartSum').text(data.totalPrice[0].totalPrice)
                 }
             )
         }
-
-
-
-
 
     </script>
 </body>
