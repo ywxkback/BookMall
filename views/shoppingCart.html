@@ -50,6 +50,7 @@
         <h4>&nbsp;&nbsp;购物车</h4>
         <button class="btn btn-outline-info" onclick="testLogin()">登录</button>
         <button class="btn btn-outline-info" onclick="showAllBooks()">显示购物车</button>
+        <button class="btn btn-outline-info" onclick="testCart()">随机加购</button>
         <div id="cart" class="container border">
             <!--放购物车内容-->
 
@@ -61,9 +62,6 @@
         $(document).ready(function(){
             //testSignUp();
             //testLogin();
-            // testCart(39);
-            // testCart(58);
-            //testCart(99);
             //showAllBooks();
 
             //selectAll();
@@ -129,7 +127,8 @@
 
         }
 
-        function testCart(bookId) {
+        function testCart() {
+            let bookId = parseInt(Math.random() * (203) + 1);
             $.post('/cart/addBook',
                 {
                     bId: bookId
@@ -145,11 +144,12 @@
                             break;
                         case 100:
                             console.log('成功，加入一本书到用户的购物车');
-                            alert('加入成功');
+                            showAllBooks();
                             break;
                         case 101:
                             console.log('成功，图书已存在，数量+1');
-                            alert('加入成功');
+                            showAllBooks();
+                            break;
                     }
                 }
             );
@@ -243,7 +243,7 @@
                         '                    </div>\n' +
                         '                </div>\n' +
                         '                <div class="col-sm-1 text-center text-center">\n' +
-                        '                    <a class="btn btn-light">删除</a>\n' +
+                        '                    <a class="btn btn-light" id="deleteBook" onclick="deleteBook()">删除</a>\n' +
                         '                </div>\n' +
                         '                <div class="col-sm-5 text-center text-center">\n' +
                         '\n' +
@@ -309,7 +309,36 @@
         }
         
         function deleteBook() {
-            
+            $('input:checkbox').each(function() {
+                if(this.id === "selectAll_2" || this.id === "selectAll_1"){
+                }
+                else{
+                    if($(this).is(':checked')){
+                        let bid =  this.name;
+                        $.post('/cart/deleteBook',
+                            {
+                                bId: bid,
+                            },
+                            function(result){
+                                switch (result.code) {
+                                    case 201:
+                                        console.log('uId should not be empty');
+                                        break;
+                                    case 202:
+                                        console.log('bId should not be empty.');
+                                        break;
+                                    case 101:
+                                        console.log(bid+'successfully delete');
+                                        showAllBooks();
+                                        break;
+                                }
+                            }
+                        );
+                    }
+
+                }
+
+            });
         }
 
         function changeStatus(cartBookId, status) {
