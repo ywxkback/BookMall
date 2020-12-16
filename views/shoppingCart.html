@@ -275,24 +275,21 @@
                     $('input:checkbox').each(function() {
                         $(this).prop('checked', true);
                         if(this.id === "selectAll_2" || this.id === "selectAll_1"){
-                            console.log("hahhahhha");
+                            console.log(this.id);
                         }
                         else{
                             changeStatus(this.name, 1);
-                            //selectBook(this.id, this.name);
                         }
 
                     });
                 }else{
                     $('input:checkbox').each(function() {
                         $(this).prop('checked', false);
-                        //changeStatus(this.name, 0);
                         if(this.id === "selectAll_2" || this.id === "selectAll_1"){
-                            console.log("hahhahhha");
+                            console.log(this.id);
                         }
                         else{
                             changeStatus(this.name, 0);
-                            //selectBook(this.id, this.name);
                         }
                     });
                 }
@@ -301,8 +298,6 @@
 
         function selectBook(checkBoxId,cartBookId) {
             let checkBoxId_ = "#"+checkBoxId;
-            console.log(checkBoxId_);
-            console.log(cartBookId);
             $(checkBoxId_).on("change",function(){
                 if($(this).is(':checked')){
                     changeStatus(cartBookId, 1);
@@ -311,6 +306,10 @@
                     changeStatus(cartBookId, 0);
                 }
             });
+        }
+        
+        function deleteBook() {
+            
         }
 
         function changeStatus(cartBookId, status) {
@@ -321,7 +320,6 @@
                     status: status
                 },
                 function(result){
-                    console.log(result.code);
                     switch (result.code) {
                         case 201:
                             console.log('uId should not be empty');
@@ -330,7 +328,7 @@
                             console.log('bId should not be empty.');
                             break;
                         default:
-                            console.log('修改状态为'+status);
+                            console.log(cartBookId+'修改状态为'+status);
                             break;
                     }
                 }
@@ -338,12 +336,18 @@
         }
 
         function getSum() {
-            $.post('/cart/calcTotalPrice',
-                {},  (data) => {
-                    console.log(data.totalPrice[0].totalPrice);
-                    $('#cartSum').text(data.totalPrice[0].totalPrice)
-                }
-            )
+            setInterval(function () {
+                $.post('/cart/calcTotalPrice',
+                    {},  (data) => {
+                        if(data.totalPrice[0].totalPrice === null){
+                            $('#cartSum').text("0");
+                        }
+                        else{
+                            $('#cartSum').text(data.totalPrice[0].totalPrice)
+                        }
+                    }
+                )
+            },100)
         }
 
     </script>
