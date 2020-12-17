@@ -191,6 +191,7 @@
                         let bNum = booksList[i].bNum;
                         let bPrice = booksList[i].bPrice;
                         let bPriceSum = bNum * bPrice;
+                        bPriceSum = bPriceSum.toFixed(2)
                         let bId = booksList[i].bId;
                         cartBooks += '<br>\n' +
                             '            <div class="row border">\n' +
@@ -216,20 +217,20 @@
                             '                <div class="col-sm-2 text-center">\n' +
                             '                    <div  class="_middle">\n' +
                             '                        <span class="text-dark card-text font-weight-bold">￥</span>\n' +
-                            '                        <span class="text-dark card-text font-weight-bold">'+bPrice+'</span>\n' +
+                            '                        <span class="text-dark card-text font-weight-bold" id="bPrice_'+bId+'">'+bPrice+'</span>\n' +
                             '                    </div>\n' +
                             '                </div>\n' +
                             '                <div class="col-sm-3 text-center">\n' +
                             '                    <div class="text-center  _middle">\n' +
-                            '                        <a href="" class="btn btn-light changenumbtn">－</a>\n' +
-                            '                        <input type="text" value="'+bNum+'" class="smallinput">\n' +
-                            '                        <a href="" class="btn btn-light changenumbtn">＋</a>\n' +
+                            '                        <a  class="btn btn-light changenumbtn" onclick="deleteOneBook('+bId+')">－</a>\n' +
+                            '                        <input type="text" id="bookNum_'+bId+'" value="'+bNum+'" class="smallinput">\n' +
+                            '                        <a  class="btn btn-light changenumbtn" onclick="addOneBook('+bId+')">＋</a>\n' +
                             '                    </div>\n' +
                             '                </div>\n' +
                             '                <div class="col-sm-2 text-center">\n' +
                             '                    <div  class="_middle">\n' +
                             '                        <span class="text-danger card-text font-weight-bold">￥</span>\n' +
-                            '                        <span class="text-danger card-text font-weight-bold">'+bPriceSum+'</span>\n' +
+                            '                        <span class="text-danger card-text font-weight-bold" id="bPriceSum_'+bId+'">'+bPriceSum+'</span>\n' +
                             '                    </div>\n' +
                             '                </div>\n' +
                             '            </div>'
@@ -358,14 +359,70 @@
                             break;
                         default:
                             console.log(cartBookId+'修改状态为'+status);
+                            getSum();
                             break;
                     }
                 }
             );
         }
+        
+        function addOneBook(bookId) {
+            let num = "#bookNum_" + bookId;
+            let bp = "#bPrice_" + bookId;
+            let bps = "#bPriceSum_" + bookId;
+
+            $.post('/cart/addOneBook',
+                {
+                    bId: bookId
+                },
+                function (data) {
+                    switch (data.code) {
+                        case 201:console.log("uId 为空");break;
+                        case 202:console.log("bId 为空");break;
+                        case 101:console.log("成功增加一本");
+                                let n = $(num).val()*1 +1;
+                                let p = $(bp).text()*1*n;
+                                p = p.toFixed(2);
+                                $(num).val(n);
+                                $(bps).text(p);
+                                getSum();
+                                //showAllBooks();
+                                break;
+                    }
+                })
+        }
+
+        function deleteOneBook(bookId) {
+            let num = "#bookNum_"+bookId;
+            let bp = "#bPrice_" + bookId;
+            let bps = "#bPriceSum_" + bookId;
+            $.post('/cart/minusOneBook',
+                {
+                    bId: bookId
+                },
+                function (data) {
+                    switch (data.code) {
+                        case 201:console.log("uId 为空");break;
+                        case 202:console.log("bId 为空");break;
+                        case 101:console.log("成功删除一本，若图书数量为0，则从购物车中移除");
+                                let n = $(num).val()*1 -1;
+                                let p = $(bp).text()*1*n;
+                                p = p.toFixed(2);
+                                if(n > 0){
+                                    $(num).val(n);
+                                    $(bps).text(p);
+                                    getSum();
+                                }
+                                else{
+                                    showAllBooks();
+                                }
+                                break;
+                    }
+                })
+        }
 
         function getSum() {
-            setInterval(function () {
+
                 $.post('/cart/calcTotalPrice',
                     {},  (data) => {
                         if(data.totalPrice[0].totalPrice === null){
@@ -376,7 +433,7 @@
                         }
                     }
                 )
-            },100)
+
         }
 
     </script>

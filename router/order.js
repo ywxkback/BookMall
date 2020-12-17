@@ -46,7 +46,6 @@ r.post('/createOrder', (request, response) => {
     response.send({'code' : 700,msg:"创建订单成功"});
 });
 
-
 /* 删除订单 */
 r.get('/deleteOrder', (request, response) => {
     var uId = request.session.uId;
