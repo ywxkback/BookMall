@@ -45,7 +45,7 @@
                 if(keyword == ''){
                     alert('请输入需要搜索的关键字！');
                 }else {
-                    $(location).attr('href', encodeURI('http://localhost:8080/searchResult.html?keyword=' + keyword));
+                    $(location).attr('href', encodeURI('/searchResult.html?keyword=' + keyword));
                 }
             });
 
@@ -75,7 +75,7 @@
                         'p': pageNo,
                         'key' : keyword
                     },
-                    url: 'http://127.0.0.1:8080/book/searchByKey',
+                    url: '/book/searchByKey',
                     success: function (data){
                         fillPanel(data, pageNo);
                     }
@@ -88,7 +88,7 @@
                         'p': pageNo,
                         'tagList' : data.labels.join()
                     },
-                    url: 'http://127.0.0.1:8080/book/searchByTags',
+                    url: '/book/searchByTags',
                     success: function (data){
                         fillPanel(data, pageNo);
                     }
@@ -100,7 +100,7 @@
                     data: {
                         'p': pageNo
                     },
-                    url: 'http://127.0.0.1:8080/book/findAll',
+                    url: '/book/findAll',
                     success: function (data){
                         fillPanel(data, pageNo);
                     }
@@ -113,7 +113,7 @@
                         'key': data.keyword,
                         'tagList': data.labels.join()
                     },
-                    url: 'http://127.0.0.1:8080/book/searchByTagsAndKeys',
+                    url: '/book/searchByTagsAndKeys',
                     success: function (data){
                         fillPanel(data, pageNo);
                     }
@@ -190,62 +190,127 @@
             $("#bookDisplayPanel").html(books);
             addPaginationBar(data.total, pageNo);
         }
+
+        //转到图书详情页面（未完成）
+        function watchDetail(obj){
+            let bId = $(obj).parents(".card-body-book").find("p:hidden").html();
+            $(location).attr('href', '/页面名称?' + bId);
+        }
+
+        //将图书加入购物车
+        function addCart(obj) {
+            let bookId = $(obj).parents(".card-body-book").find("p:hidden").html();
+            console.log(bookId);
+            //console.log(bookId);
+            $.post('/cart/addBook',
+                {
+                    bId: bookId
+                },
+                function(result, state){
+                    switch (result) {
+                        case 201:
+                            console.log('uId is null');
+                            break;
+                        case 202:
+                            console.log('bId is null');
+                            break;
+                        case 100:
+                            console.log('成功，加入一本书到用户的购物车');
+                            alert('加入成功');
+                            break;
+                        case 101:
+                            console.log('成功，图书已存在，数量+1');
+                            alert('加入成功');
+                    }
+                }
+            );
+        }
     </script>
 </head>
 <body>
 <div class="container">
-    <!-- 顶部信息栏 -->
-    <div class="row clearfix sticky-top">
-        <div class="col-12">
-            <ul class="breadcrumb justify-content-end">
-                <li class="breadcrumb-item">
-                    欢迎光临xx书店，请先<a href="view/login.html">登录</a>
+    <nav class="navbar navbar-expand-lg bg-navbar sticky-top">
+        <a href="/index.html" class="navbar-brand"><img src="/public/img/logo.png" alt=""/></a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link text-muted" href="/views/login.html">登录</a>
                 </li>
-                <li class="breadcrumb-item">
-                    <a href="view/regist.html">注册</a>
+                <li class="nav-item">
+                    <a class="nav-link text-muted" href="/views/regist.html">注册</a>
                 </li>
-                <li class="breadcrumb-item">
-                    <div class="dropdown" id="hover_dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">我</a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="#">账户信息</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">我的购物车</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">我的订单</a>
-                            </li>
-                        </ul>
+                <li class="nav-item dropdown">
+                    <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+                        我
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item text-muted" href="#" >账户信息</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-muted" href="#">我的购物车</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-muted" href="#">我的订单</a>
                     </div>
                 </li>
-                <li class="breadcrumb-item">
-                    <a href="#">联系客服</a>
+                <li class="nav-item">
+                    <a class="nav-link text-muted" href="#">联系我们</a>
                 </li>
             </ul>
         </div>
-    </div>
+    </nav>
 
     <!-- 网站logo + 搜索框 + 购物车按钮 -->
-    <div class="row">
-        <div class="col-lg-3 col-md-12">
-            <a href="http://127.0.0.1:8080/index.html" class="navbar-brand"><img src="../public/img/logo.png" alt=""/></a>
-        </div>
-        <div class="col-lg-5 col-md-12 mt-3">
-            <div class="input-group">
-                <!--                <img src="img/header/search.png" alt=""/>-->
-                <input type="text" id="keyword" class="form-control pt-0 pb-0" placeholder="请输入书籍名称、作者或出版社"/>
-                <input type="button" id="searchBtn" value="搜索" />
+    <div class="row mt-5 mb-5 bg-up">
+        <div class="col-lg-3 col-md-12 d-flex justify-content-end align-content-center">
+            <div class="libraryBtnBox">
+                <a id="libraryBtn" href="/searchResult.html" class="library_icon"><i class="fa fa-book"></i></a>
+                <input class="libraryText" type="text" value="图书馆" disabled="disabled">
             </div>
         </div>
-        <!-- 带图标的按钮 -->
-        <div class="col-lg-4 col-md-12 p-0 mt-3">
-            <!--                <a href="#" class="btn btn-lg red">-->
-            <!--                    <span class="fa fa-unlock-alt fa-2x"></span>我的购物车-->
-            <!--                </a>-->
-            <a href="#" class="btn btn-outline-danger btn-lg"><i class="glyphicon glyphicon-shopping-cart"></i> 我的购物车</a>
+        <div class="col-lg-6 d-flex justify-content-center align-content-center">
+            <div class="searchbar">
+                <input id="keyword" class="search_input" type="text" placeholder="请输入书籍名称、作者或出版社">
+                <a id="searchBtn" href="#" class="search_icon"><i class="fa fa-search"></i></a>
+            </div>
         </div>
+        <div class="col-lg-3 col-md-12 d-flex justify-content-start align-content-center">
+            <div class="cartBtnBox">
+                <a id="cartBtn" href="/views/shoppingCart.html" class="cart_icon"><i class="fa fa-shopping-cart"></i></a>
+                <input class="cartText" type="text" value="购物车" disabled="disabled">
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片轮播 -->
+    <div class="carousel" data-ride="carousel" id="demo">
+        <!-- 1.轮播图片-->
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img alt="" class="w-100" src="../public/img/lb1.png"/>
+            </div>
+            <div class="carousel-item">
+                <img alt="" class="w-100" src="../public/img/lb2.png"/>
+            </div>
+            <div class="carousel-item">
+                <img alt="" class="w-100" src="../public/img/lb3.png"/>
+            </div>
+            <div class="carousel-item">
+                <img alt="" class="w-100" src="../public/img/lb4.png"/>
+            </div>
+        </div>
+        <!-- 2.左右箭头-->
+        <a class="carousel-control-next" data-slide="next" href="#demo">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+        <a class="carousel-control-prev" data-slide="prev" href="#demo">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <!-- 3.轮播指示符-->
+        <ul class="carousel-indicators">
+            <li class="active" data-slide-to="0" data-target="#demo"></li>
+            <li data-slide-to="1" data-target="#demo"></li>
+            <li data-slide-to="2" data-target="#demo"></li>
+            <li data-slide-to="3" data-target="#demo"></li>
+        </ul>
     </div>
 
     <!-- 筛选标签,

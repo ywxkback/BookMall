@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <script type="text/javascript" src="static/jsp/regist.js"></script>
+    <link rel="stylesheet" href="css/regist.css">
+</head>
+
+<body>
+<div id="loginDiv">
+    <form action='/user/userRegister' method="post">
+        <h1>注  册</h1>
+        <p>用户名称:<input id="uName" type="text" autofocus required></p>
+
+        <p>用户密码:<input id="uPwd" type="password" required></p>
+
+        <p>确认密码:<input id="surePassword" type="password" required></p>
+
+        <p>手机号码:<input id="uPhone" type="text" autofocus required></p>
+
+        <p style="text-align: center;">
+            <input type="submit" class="button" onblur="checkForm()" onclick="return submitT()" value="注 册  ">
+            <input type="reset" class="button" value="重 置  ">
+        </p>
+    </form>
+</div>
+
+</body>
+</html>
