@@ -12,11 +12,6 @@
     <script src="/public/js/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            var username = session.getAttribute("uId");
-            var userName = '<%=session.getAttribute("uId")%>';
-            console.log("username:" + username);
-            console.log("userName:" + userName);
-
             //鼠标悬停触发事件
             $(".dropdown").hover(function(){
                 $(".dropdown-toggle").dropdown('toggle');
