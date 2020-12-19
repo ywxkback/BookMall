@@ -33,6 +33,17 @@ r.post('/userRegister', (req, res) => {
     })
 })
 
+r.post('isLogin',(req, res) => {
+    if(session.uId){
+        res.send(1)
+        return;
+    }
+    else{
+        res.send(0)
+        return;
+    }
+})
+
 //用户登录
 r.post('/userLogin', (req, res) => {
     //获取数据
