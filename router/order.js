@@ -10,8 +10,7 @@ r.get('/findAll', (request, response) => {
         'WHERE uId = ?';
     pool.query(sql,[uId], (err, result, fields) => {
         if (err) throw err;
-        response.send({list : result});
-        response.send({code: 400,msg:"返回订单成功"});
+        response.send({list : result,code: 400,msg:"返回订单成功"});
         console.log(result);
     })
 });
