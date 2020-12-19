@@ -54,8 +54,6 @@
         <div id="cart" class="container border">
             <!--放购物车内容-->
 
-
-
         </div>
     </div>
     <script>
@@ -257,7 +255,7 @@
                         '                    </div>\n' +
                         '                </div>\n' +
                         '                <div class="col-sm-2 text-center text-center">\n' +
-                        '                    <a href="#" class="btn btn-outline-danger jiesuan">\n' +
+                        '                    <a href="#" class="btn btn-outline-danger jiesuan " onclick="jiesuan()">\n' +
                         '                        结算\n' +
                         '                    </a>\n' +
                         '                </div>\n' +
@@ -434,6 +432,21 @@
                     }
                 )
 
+        }
+
+        function jiesuan() {
+            let i = 0;
+            $('input:checkbox').each(function() {
+                if($(this).is(':checked')){
+                    i = 1;
+                }
+            })
+            if(i === 0){
+                alert("没有选中商品");
+            }
+            else{
+                window.location.href = "http://localhost:8080/confirmOrder.html";
+            }
         }
 
     </script>

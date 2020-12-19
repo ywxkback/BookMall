@@ -63,6 +63,16 @@ r.post('/userLogin', (req, res) => {
     })
 })
 
+r.post('/isLogin',(req, res) => {
+    if(req.session.uId){
+        res.send(1)
+        return;
+    }
+    else{
+        res.send(0)
+        return;
+    }
+})
 
 r.post('/userLogout', (req, res) => {
     console.log(req.session)
