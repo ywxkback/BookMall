@@ -23,8 +23,7 @@ r.get('/findOne', (request, response) => {
         'WHERE oId = ?';
     pool.query(sql,[oId], (err, result, fields) => {
         if (err) throw err;
-        response.send({list : result});
-        response.send({code: 400,msg:"返回某个订单成功"});
+        response.send({list : result,code: 400,msg:"返回某个订单成功"});
         console.log(result);
     })
 });
