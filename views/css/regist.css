@@ -9,7 +9,7 @@ html {
     overflow: hidden;
     margin: 0;
     padding: 0;
-    background: url(../Desert.jpg) no-repeat 0px 0px;
+    background: url('/public/img/Desert.jpg') no-repeat 0px 0px;
     background-repeat: no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;

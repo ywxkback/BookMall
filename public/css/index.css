@@ -3,7 +3,7 @@ body,html{
     width: 100%;
     margin: 0;
     padding: 0;
-    background: url("/public/img/body6.webp");
+    background: url("/public/img/htmlBackground.webp");
     background-size: cover;
 }
 
