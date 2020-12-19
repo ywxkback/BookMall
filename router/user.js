@@ -33,7 +33,7 @@ r.post('/userRegister', (req, res) => {
     })
 })
 
-r.post('isLogin',(req, res) => {
+r.post('/isLogin',(req, res) => {
     if(req.session.uId){
         res.send({code: 1, msg: 'you have logined'})
         return;
