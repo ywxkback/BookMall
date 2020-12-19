@@ -6,6 +6,7 @@ const r = express.Router();
 r.post('/addBook', (request, response) => {
     var bId = request.body.bId;
     var uId = request.session.uId;
+    //console.log(uId);
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
