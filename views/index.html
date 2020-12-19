@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="/public/css/bootstrap.css"/>
     <link rel="stylesheet" href="/public/css/index.css"/>
     <link rel="stylesheet" href="/public/css/product.css"/>
+<!--    <link rel="stylesheet" href="/public/css/font-awesome.css"/>-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <script src="/public/js/jquery.min.js"></script>
     <script src="/public/js/popper.min.js"></script>
     <script src="/public/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" charset="UTF-8">
         $(document).ready(function(){
             //鼠标悬停触发事件
             $(".dropdown").hover(function(){
@@ -75,7 +76,7 @@
             });
         }
 
-        //转到图书详情页面（未完成）
+        //转到图书详情页面（缺少图书详情页面）
         function watchDetail(obj){
             let bId = $(obj).parents(".card-body-book").find("p:hidden").html();
             $(location).attr('href', '/页面名称?' + bId);
@@ -115,7 +116,8 @@
     </script>
 </head>
 <body>
-<div class="container">
+<div class="container container-bg">
+    <!-- 顶部悬停栏 -->
     <nav class="navbar navbar-expand-lg bg-navbar sticky-top">
         <a href="/index.html" class="navbar-brand"><img src="/public/img/logo.png" alt=""/></a>
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
@@ -145,7 +147,7 @@
         </div>
     </nav>
 
-    <!-- 网站logo + 搜索框 + 购物车按钮 -->
+    <!-- 图书馆按钮 + 搜索框 + 购物车按钮 -->
     <div class="row mt-5 mb-5 bg-up">
         <div class="col-lg-3 col-md-12 d-flex justify-content-end align-content-center">
             <div class="libraryBtnBox">
@@ -205,205 +207,26 @@
         <span class="title_font">畅销图书</span>
         <hr color="white" />
     </div>
-    <!--    <div class="album py-5 bg-light">-->
     <div class="container" id="bookDisplayPanel1"></div>
 
     <div class="title pt-5 pb-5">
         <span class="title_font">限时折扣</span>
         <hr color="white" />
     </div>
-    <!--    <div class="album py-5 bg-light">-->
     <div class="container" id="bookDisplayPanel2"></div>
 
     <div class="title pt-5 pb-5">
         <span class="title_font">最新上架</span>
         <hr color="white" />
     </div>
-    <!--    <div class="album py-5 bg-light">-->
     <div class="container" id="bookDisplayPanel3"></div>
 
     <div class="title pt-5 pb-5">
         <span class="title_font">书友推荐</span>
         <hr color="white" />
     </div>
-    <!--    <div class="album py-5 bg-light">-->
-    <div class="container" id="bookDisplayPanel4">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="watchDetail(this)">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addCart(this)">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="container" id="bookDisplayPanel4"></div>
 
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="#" alt="" class="book-img">
-                    <div class="card-body-book">
-                        <div class="book-info">
-                            <p hidden="hidden"></p>
-                            <p class="book-title"></p>
-                            <p class="book-author"></p>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">查看</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">加入购物车</button>
-                            </div>
-                            <!--                                <small class="text-muted">9 mins</small>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- 分割线 -->
     <hr color="#ffffff" />
 
@@ -480,6 +303,7 @@
                 </ul>
             </div>
         </div>
+
         <!-- 版权信息-->
         <div class="text-center">©2017 达内集团有限公司 版权所有 京ICP证xxxxxxxxxxx</div>
     </footer>

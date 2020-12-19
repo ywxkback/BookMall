@@ -211,3 +211,12 @@ body,html{
 .icon_color{
     color: #6c757d;
 }
+
+.switch{
+    margin-left: 5px;
+}
+
+.pagination-margin {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
