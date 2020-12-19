@@ -34,12 +34,12 @@ r.post('/userRegister', (req, res) => {
 })
 
 r.post('isLogin',(req, res) => {
-    if(session.uId){
-        res.send(1)
+    if(req.session.uId){
+        res.send({code: 1, msg: 'you have logined'})
         return;
     }
     else{
-        res.send(0)
+        res.send({code: 0, msg: 'you need to login'})
         return;
     }
 })
