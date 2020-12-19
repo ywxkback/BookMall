@@ -18,31 +18,33 @@ r.get('/findAll', (request, response) => {
 
 /* 创建订单 */
 r.post('/createOrder', (request, response) => {
-    var bIdList = request.body.bIdList.split(",");
-    var bNumList = request.body.bNumList.split(",");
-    var n = bIdList.length;
     var oTotalPrice = request.body.oTotalPrice;
     var oAddress = request.body.oAddress;
     var uId = request.session.uId;
-    console.log(request.body)
     var sqlOrders = "INSERT INTO `orders` (uId,oTotalPrice,oAddress,oState) VALUES (?,?,?,'进行中') ";
     pool.query(sqlOrders,[uId,oTotalPrice,oAddress], (err, result, fields) => {
         if (err) throw err;
         var oId = result.insertId;
-        for(var i = 0;i < n;i++)
-        {
-            var bId = bIdList[i];
-            var bNum = bNumList[i];
-            var sqlOrderBook = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
-            pool.query(sqlOrderBook,[oId,bId,bNum],(err,result,fields) => {
-                if(err) throw err;
-            })
-            var sqlCartDe = "DELETE FROM `cart` WHERE uId=? AND bId = ?"
-            pool.query(sqlCartDe, [uId, bId], (err, result) => {
-                if (err) throw err;
-            })
-        }
+        var sql = "SELECT * from `cart` where status = '1' ";
+        pool.query(sql, (err, result, fields) => {
+            if (err) throw err;
+            console.log(result)
+            for(var i = 0;i < result.length;i++)
+            {
+                var bId = result[i].bId;
+                var bNum = result[i].bNum;
+                var sqlOrderBook = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
+                pool.query(sqlOrderBook,[oId,bId,bNum],(err,result,fields) => {
+                    if(err) throw err;
+                })
+            }
+        })
+        var sqlCartDe = "DELETE FROM `cart` WHERE status = '1' "
+        pool.query(sqlCartDe, (err, result) => {
+            if (err) throw err;
+        })
     })
+    console.log(request.body)
     response.send({'code' : 700,msg:"创建订单成功"});
 });
 

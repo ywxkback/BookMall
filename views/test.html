@@ -32,11 +32,9 @@
 <!--    </form>-->
 
 <!--    <h2>创建订单</h2>-->
-    <form action="/book/searchByTags" method="get">
-        <input type="text" name="tagList" value="">
-        <input type="text" name="tagList" value="">
-        <input type="text" name="tagList" value="">
-        <input type="text" name="tagList" value="">
+    <form action="/order/createOrder" method="post">
+        总价格：<input type='text'  name='oTotalPrice'><br/>
+        地址：<input type='text'  name='oAddress'><br/>
         <input type="submit" value="submit">
     </form>
     </body>
