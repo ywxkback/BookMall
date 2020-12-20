@@ -212,18 +212,19 @@
                 function(result, state){
                     switch (result) {
                         case 201:
-                            console.log('uId is null');
+                            console.log(result.msg);
+                            window.alert("请先登录！");
                             break;
                         case 202:
-                            console.log('bId is null');
+                            console.log(result.msg);
                             break;
                         case 100:
                             console.log('成功，加入一本书到用户的购物车');
-                            alert('加入成功');
+                            window.alert('加入成功');
                             break;
                         case 101:
                             console.log('成功，图书已存在，数量+1');
-                            alert('加入成功');
+                            window.alert('加入成功');
                     }
                 }
             );
