@@ -17,13 +17,27 @@ r.get('/findAll', (request, response) => {
 
 /* 返回某个订单 */
 r.get('/findOne', (request, response) => {
-    var oId = request.body.oId;
-    var sql = 'SELECT * FROM `orderbook`' +
-        'WHERE oId = ?';
-    pool.query(sql,[oId], (err, result, fields) => {
+    var oId = request.query.oId;
+    console.log(oId)
+    var sql = 'SELECT * FROM `orderbook` WHERE oId = ?'
+    var list = [];
+    var flag = 0;
+    pool.query(sql,[oId],(err, result, fields) => {
         if (err) throw err;
-        response.send({list : result,code: 400,msg:"返回某个订单成功"});
-        console.log(result);
+        console.log(result)
+        for(var i = 0;i < result.length;i++) {
+            var bId = result[i].bId;
+            console.log(bId)
+            var sqlBook = "SELECT * FROM `books` WHERE bId = ? ";
+            pool.query(sqlBook,[bId],(err,result2,fields) => {
+                if(err) throw err;
+                list.push(result2[0]);
+                flag++;
+                if(flag === result.length) {
+                    response.send({list : list,code: 400,msg:"返回某个订单成功"});
+                }
+            })
+        }
     })
 });
 
