@@ -33,17 +33,6 @@ r.post('/userRegister', (req, res) => {
     })
 })
 
-r.post('/isLogin',(req, res) => {
-    if(req.session.uId){
-        res.send({code: 1, msg: 'you have logined'})
-        return;
-    }
-    else{
-        res.send({code: 0, msg: 'you need to login'})
-        return;
-    }
-})
-
 //用户登录
 r.post('/userLogin', (req, res) => {
     //获取数据
@@ -74,6 +63,14 @@ r.post('/userLogin', (req, res) => {
     })
 })
 
+r.post('/isLogin',(req, res) => {
+    if(req.session.uId){
+        res.send({code: 1, msg: '已登录'})
+    }
+    else{
+        res.send({code: 0, msg: '未登录'})
+    }
+})
 
 r.post('/userLogout', (req, res) => {
     console.log(req.session)

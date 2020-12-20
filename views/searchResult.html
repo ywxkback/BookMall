@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="public/css/bootstrap.css"/>
     <link rel="stylesheet" href="public/css/index.css"/>
     <link rel="stylesheet" href="public/css/product.css"/>
-<!--    <link rel="stylesheet" href="public/css/font-awesome.css"/>-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="public/css/font-awesome.css"/>
+<!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">-->
     <script src="public/js/jquery.min.js"></script>
 <!--    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>-->
     <script src="public/js/popper.min.js"></script>
@@ -16,6 +16,8 @@
         let keyword = null;
         let labels = null;
         $(document).ready(function(){
+
+            isLogin();
             //鼠标悬停触发事件
             $(".dropdown").hover(function(){
                 $(".dropdown-toggle").dropdown('toggle');
@@ -66,6 +68,56 @@
         //书库：显示所有图书
         function showAllBooks() {
             showOnePage(1, {'keyword':null, 'labels':null});
+        }
+
+        function isLogin() {
+            $.post('/user/isLogin',
+                {},
+                function (data){
+                    if(data.code){
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" onclick="loginOut()" href="/index.html">退出</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item dropdown">\n' +
+                            '                    <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">\n' +
+                            '                        我\n' +
+                            '                    </a>\n' +
+                            '                    <div class="dropdown-menu">\n' +
+                            '                        <a class="dropdown-item text-muted" href="#" >账户信息</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/shoppingCart.html">我的购物车</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/myOrder.html">我的订单</a>\n' +
+                            '                    </div>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+                    }
+                    else{
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item" >\n' +
+                            '                    <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+                    }
+                })
+        }
+
+        function loginOut() {
+            $.post('/user/userLogout',{},function (data) {
+                if(data.code === 900){
+                    window.location.href = "http://localhost:8080/index.html";
+                }
+            })
         }
 
         //显示1页内容，具体执行哪种查询由参数data内的keyword和labels决定
@@ -197,7 +249,7 @@
         //转到图书详情页面（缺少图书详情页面）
         function watchDetail(obj){
             let bId = $(obj).parents(".card-body-book").find("p:hidden").html();
-            $(location).attr('href', '/页面名称?' + bId);
+            $(location).attr('href', '/bookDetail.html?bId=' + bId);
         }
 
         //将图书加入购物车
@@ -209,22 +261,22 @@
                 {
                     bId: bookId
                 },
-                function(result, state){
-                    switch (result) {
+                function(result){
+                    switch (result.code) {
                         case 201:
                             console.log(result.msg);
-                            window.alert("请先登录！");
+                            alert("请先登录！");
                             break;
                         case 202:
                             console.log(result.msg);
                             break;
                         case 100:
                             console.log('成功，加入一本书到用户的购物车');
-                            window.alert('加入成功');
+                            alert('加入成功');
                             break;
                         case 101:
                             console.log('成功，图书已存在，数量+1');
-                            window.alert('加入成功');
+                            alert('加入成功');
                     }
                 }
             );
@@ -237,12 +289,12 @@
     <nav class="navbar navbar-expand bg-navbar sticky-top">
         <a href="/index.html"><img src="/public/img/logo.png" alt=""/></a>
         <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav" id="navbarT">
                 <li class="nav-item">
-                    <a class="nav-link text-muted" href="/login.html">登录</a>
+                    <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-muted" href="/regist.html">注册</a>
+                <li class="nav-item" >
+                    <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
@@ -279,7 +331,7 @@
         </div>
         <div class="col-lg-3 d-flex justify-content-start align-content-center">
             <div class="cartBtnBox">
-                <a id="cartBtn" href="/views/shoppingCart.html" class="cart_icon"><i class="fa fa-shopping-cart icon_color"></i></a>
+                <a id="cartBtn" href="/shoppingCart.html" class="cart_icon"><i class="fa fa-shopping-cart icon_color"></i></a>
                 <input class="cartText" type="text" value="购物车" disabled="disabled">
             </div>
         </div>
@@ -475,5 +527,6 @@
         <div class="text-center">©2017 达内集团有限公司 版权所有 京ICP证xxxxxxxxxxx</div>
     </footer>
 </div>
+
 </body>
 </html>

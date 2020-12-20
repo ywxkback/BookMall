@@ -39,8 +39,8 @@ r.get('/showDetail', (request, response) => {
     var sql = "SELECT * FROM `books` where bId =?"
     pool.query(sql, [bId], (err, result) => {
         if (err) throw err;
-        // console.log(result);
-        response.send({result});
+        console.log(result);
+        response.send({result: result});
     })
 })
 

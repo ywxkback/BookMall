@@ -1,0 +1,36 @@
+.smallinput{
+    width: 38px;
+    height: 38px;
+}
+
+.changenumbtn{
+    width: 38px;
+}
+
+.cartimg{
+    width: 81px;
+    height: 105.3px;
+}
+
+._middle {
+    float: none;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.jiesuan{
+    width: 100%;
+}
+
+.beizhu{
+    width: 100%;
+}
+
+.dizhi{
+    width: 100%;
+    height: 100%;
+}
+
+.tijiao{
+    width: 50%;
+}

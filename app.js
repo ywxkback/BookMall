@@ -55,6 +55,12 @@ app.use('/public', express.static(__dirname + '/public'))
 
 /* 监听 */
 app.listen(port, () => {
+    console.log(`Home: http://localhost:${port}/login.html`)
+    console.log(`Home: http://localhost:${port}/regist.html`)
     console.log(`Home: http://localhost:${port}/index.html`)
+    console.log(`Home: http://localhost:${port}/searchResult.html`)
+    console.log(`Home: http://localhost:${port}/shoppingCart.html`)
+    console.log(`Home: http://localhost:${port}/confirmOrder.html`)
+    console.log(`Home: http://localhost:${port}/myOrder.html`)
 })
 

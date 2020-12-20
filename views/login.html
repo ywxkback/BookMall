@@ -4,23 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <title>login</title>
-    <script type="text/javascript" src="/public/js/login.js"></script>
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="/public/css/login.css">
+    <script src="../public/js/jquery.min.js"></script>
+    <script src="../public/js/popper.min.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 <div id="loginDiv">
-    <form action='/user/userLogin' id="form" method="post" >
-        <h1 style="text-align: center;color: aliceblue;">登  陆</h1>
-        <p>用 户 名:<input id="uName" type="text"><label id="name_trip"></label></p>
+    <form  id="form" >
+        <h1 style="text-align: center;color:#6c757d;">登  陆</h1>
+        <p style="color: #6c757d">用 户 名:<input id="uName" type="text" class="input1"><label id="name_trip"></label></p>
 
-        <p>密 码 :&nbsp&nbsp&nbsp<input id="uPwd" type="password"><label id="password_trip"></label></p>
+        <p style="color: #6c757d">密 码 :&nbsp;&nbsp;&nbsp;<input id="uPwd" type="password" class="input1"><label id="password_trip"></label></p>
 
         <div style="text-align: center;margin-top: 30px;">
-            <input type="submit" class="button" value="登 陆  ">
-            <a href="regist.html"><input type="button" class="button" value="注 册  "></a>
+            <input type="button" class="btn btn-sm btn-outline-secondary" onclick="login()" value="  登 陆  ">
+            <a href="regist.html"><input type="button" class="btn btn-sm btn-outline-secondary" value="  注 册  "></a>
         </div>
     </form>
+    <script>
+        function login() {
+            $.post('/user/userLogin',
+                {
+                    uName: $("#uName").val(),
+                    uPwd: $("#uPwd").val()
+                },
+                function (data){
+                    switch (data.code) {
+                        case 401:
+                            alert("用户名为空");
+                            break;
+                        case 402:
+                            alert("密码为空");
+                            break;
+                        case 301:
+                            alert("登录失败");
+                            break;
+                        case 300:
+                            window.location.href = "http://localhost:8080/index.html";
+                            break;
+                    }
+                }
+            )
+        }
+    </script>
 </div>
 
 </body>

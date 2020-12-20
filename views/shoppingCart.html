@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../public/css/bootstrap.css">
+    <link rel="stylesheet" href="../public/css/other.css">
+    <link rel="stylesheet" href="/public/css/index.css"/>
+    <script src="../public/js/jquery.min.js"></script>
+    <script src="../public/js/popper.min.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部悬停栏 -->
+        <nav class="navbar navbar-expand bg-navbar sticky-top">
+            <a href="/index.html"><img src="/public/img/logo.png" alt=""/></a>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav" id="navbarT">
+                    <li class="nav-item">
+                        <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+                            我
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item text-muted" href="#" >账户信息</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-muted" href="/shoppingCart.html">我的购物车</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-muted" href="/myOrder.html">我的订单</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-muted" href="#">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <br>
+        <h4>&nbsp;&nbsp;购物车</h4>
+<!--        <button class="btn btn-outline-info" onclick="testLogin()">登录</button>-->
+<!--        <button class="btn btn-outline-info" onclick="showAllBooks()">显示购物车</button>-->
+<!--        <button class="btn btn-outline-info" onclick="testCart()">随机加购</button>-->
+        <div id="cart" class="container border  bg-light">
+            <!--放购物车内容-->
+
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            isLogin();
+            showAllBooks();
+        });
+
+        function isLogin() {
+            $.post('/user/isLogin',
+                {},
+                function (data){
+                    if(data.code){
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" onclick="loginOut()" href="/index.html">退出</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item dropdown">\n' +
+                            '                    <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">\n' +
+                            '                        我\n' +
+                            '                    </a>\n' +
+                            '                    <div class="dropdown-menu">\n' +
+                            '                        <a class="dropdown-item text-muted" href="#" >账户信息</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/shoppingCart.html">我的购物车</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/myOrder.html">我的订单</a>\n' +
+                            '                    </div>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+
+                    }
+                    else{
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item" >\n' +
+                            '                    <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+                    }
+                })
+        }
+
+        function loginOut() {
+            $.post('/user/userLogout',{},function (data) {
+                if(data.code === 900){
+                    window.location.href = "http://localhost:8080/index.html";
+                }
+            })
+        }
+
+        function testCart() {
+            let bookId = parseInt(Math.random() * (203) + 1);
+            $.post('/cart/addBook',
+                {
+                    bId: bookId
+                },
+                function(result){
+                console.log("123");
+                    switch (result.code) {
+                        case 201:
+                            console.log('uId is null');
+                            break;
+                        case 202:
+                            console.log('bId is null');
+                            break;
+                        case 100:
+                            console.log('成功，加入一本书到用户的购物车');
+                            showAllBooks();
+                            break;
+                        case 101:
+                            console.log('成功，图书已存在，数量+1');
+                            showAllBooks();
+                            break;
+                    }
+                }
+            );
+        }
+
+        function showAllBooks() {   //显示所有图书
+            $.ajax({
+                method: 'POST',
+                url: '/cart/getUserCart',
+                //data: 'uId=${11}',
+                success: function (data){
+
+                    let booksList = data.booksList;
+                    console.log(data);
+                    let cartBooks = '<div class="row  border" style="line-height: 3.5">\n' +
+                        '                <div class="col-sm-1">\n' +
+                        '                    <div>\n' +
+                        '                        <input id="selectAll_1" name="checkall" type="checkbox" onclick="selectAll(this.id)">\n' +
+                        '                        &nbsp;&nbsp;全选\n' +
+                        '                    </div>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-4 text-center text-center">\n' +
+                        '                    商品信息\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-2 text-center text-center">\n' +
+                        '                    单价\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-3 text-center text-center">\n' +
+                        '                    数量\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-2 text-center text-center">\n' +
+                        '                    金额\n' +
+                        '                </div>\n' +
+                        '            </div>';
+
+                    for(let i = 0; i < booksList.length; i++){
+                        let bchecked = booksList[i].status ? "checked" : "";
+                        let bName = booksList[i].bName;
+                        let bNum = booksList[i].bNum;
+                        let bPrice = booksList[i].bPrice;
+                        let bPriceSum = bNum * bPrice;
+                        bPriceSum = bPriceSum.toFixed(2)
+                        let bId = booksList[i].bId;
+                        cartBooks += '<br>\n' +
+                            '            <div class="row border">\n' +
+                            '                <div class="col-sm-1">\n' +
+                            '                    <div class="_middle">\n' +
+                            '                        <input type="checkbox" id="cartBook_'+i+'" name="'+bId+'" '+bchecked+' onclick="selectBook(this.id,'+bId+')">\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-4">\n' +
+                            '                    <div  class="container">\n' +
+                            '                        <div class="row">\n' +
+                            '                            <div class="col-sm-3">\n' +
+                            '                                <img src="../public/img/' + booksList[i].bUri + '" class="cartimg" onclick="watchDetail('+booksList[i].bId+')" alt="书本图片">\n' +
+                            '                            </div>\n' +
+                            '                            <div class="col-sm-9">\n' +
+                            '                                <a href="#" class="text-dark text-decoration-none" onclick="watchDetail('+booksList[i].bId+')">&nbsp;&nbsp;' + bName +'</a>\n' +
+                            '                            </div>\n' +
+                            '                        </div>\n' +
+                            '\n' +
+                            '\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-2 text-center">\n' +
+                            '                    <div  class="_middle">\n' +
+                            '                        <span class="text-dark card-text font-weight-bold">￥</span>\n' +
+                            '                        <span class="text-dark card-text font-weight-bold" id="bPrice_'+bId+'">'+bPrice+'</span>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-3 text-center">\n' +
+                            '                    <div class="text-center  _middle">\n' +
+                            '                        <a  class="btn btn-light changenumbtn" onclick="deleteOneBook('+bId+')">－</a>\n' +
+                            '                        <input type="text" id="bookNum_'+bId+'" value="'+bNum+'" class="smallinput">\n' +
+                            '                        <a  class="btn btn-light changenumbtn" onclick="addOneBook('+bId+')">＋</a>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '                <div class="col-sm-2 text-center">\n' +
+                            '                    <div  class="_middle">\n' +
+                            '                        <span class="text-danger card-text font-weight-bold">￥</span>\n' +
+                            '                        <span class="text-danger card-text font-weight-bold" id="bPriceSum_'+bId+'">'+bPriceSum+'</span>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '            </div>'
+                    }
+                    let cartSum = getSum();
+                    cartBooks += '<div class="row border"  style="line-height: 3.5">\n' +
+                        '                <div class="col-sm-1">\n' +
+                        '                    <div>\n' +
+                        '                        <input id="selectAll_2" type="checkbox"  name="checkall" onclick="selectAll(this.id)">\n' +
+                        '                        &nbsp;&nbsp;全选\n' +
+                        '                    </div>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-1 text-center text-center">\n' +
+                        '                    <a class="btn btn-light" id="deleteBook" onclick="deleteBook()">删除</a>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-5 text-center text-center">\n' +
+                        '\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-3 text-center text-center">\n' +
+                        '                    <div  class="_middle">\n' +
+                        '                        <span class="text-dark card-text font-weight-bold">合计&nbsp;:</span>\n' +
+                        '                        <span class="text-danger card-text font-weight-bold">&nbsp;&nbsp;￥</span>\n' +
+                        '                        <span class="text-danger card-text font-weight-bold" id="cartSum"></span>\n' +
+                        '                    </div>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-2 text-center text-center">\n' +
+                        '                    <a href="#" class="btn btn-outline-danger jiesuan " onclick="jiesuan()">\n' +
+                        '                        结算\n' +
+                        '                    </a>\n' +
+                        '                </div>\n' +
+                        '            </div>';
+                    $("#cart").html(cartBooks);
+                }
+            });
+        }
+
+        function watchDetail(bId){
+            $(location).attr('href', '/bookDetail.html?bId=' + bId);
+        }
+
+        function selectAll(selectAllId) {
+            //全选
+            selectAllId = "#"+selectAllId;
+            $(selectAllId).change(function () {
+                if($(this).is(':checked')){
+                    //把所有复选框选中
+                    $('input:checkbox').each(function() {
+                        $(this).prop('checked', true);
+                        if(this.id === "selectAll_2" || this.id === "selectAll_1"){
+                            console.log(this.id);
+                        }
+                        else{
+                            changeStatus(this.name, 1);
+                        }
+
+                    });
+                }else{
+                    $('input:checkbox').each(function() {
+                        $(this).prop('checked', false);
+                        if(this.id === "selectAll_2" || this.id === "selectAll_1"){
+                            console.log(this.id);
+                        }
+                        else{
+                            changeStatus(this.name, 0);
+                        }
+                    });
+                }
+            });
+        }
+
+        function selectBook(checkBoxId,cartBookId) {
+            let checkBoxId_ = "#"+checkBoxId;
+            $(checkBoxId_).on("change",function(){
+                if($(this).is(':checked')){
+                    changeStatus(cartBookId, 1);
+                }
+                else{
+                    changeStatus(cartBookId, 0);
+                }
+            });
+        }
+        
+        function deleteBook() {
+            $('input:checkbox').each(function() {
+                if(this.id === "selectAll_2" || this.id === "selectAll_1"){
+                }
+                else{
+                    if($(this).is(':checked')){
+                        let bid =  this.name;
+                        $.post('/cart/deleteBook',
+                            {
+                                bId: bid,
+                            },
+                            function(result){
+                                switch (result.code) {
+                                    case 201:
+                                        console.log('uId should not be empty');
+                                        break;
+                                    case 202:
+                                        console.log('bId should not be empty.');
+                                        break;
+                                    case 101:
+                                        console.log(bid+'successfully delete');
+                                        showAllBooks();
+                                        break;
+                                }
+                            }
+                        );
+                    }
+
+                }
+
+            });
+        }
+
+        function changeStatus(cartBookId, status) {
+            //修改数据库某书的选中状态
+            $.post('/cart/changeBookStatus',
+                {
+                    bId: cartBookId,
+                    status: status
+                },
+                function(result){
+                    switch (result.code) {
+                        case 201:
+                            console.log('uId should not be empty');
+                            break;
+                        case 202:
+                            console.log('bId should not be empty.');
+                            break;
+                        default:
+                            console.log(cartBookId+'修改状态为'+status);
+                            getSum();
+                            break;
+                    }
+                }
+            );
+        }
+        
+        function addOneBook(bookId) {
+            let num = "#bookNum_" + bookId;
+            let bp = "#bPrice_" + bookId;
+            let bps = "#bPriceSum_" + bookId;
+
+            $.post('/cart/addOneBook',
+                {
+                    bId: bookId
+                },
+                function (data) {
+                    switch (data.code) {
+                        case 201:console.log("uId 为空");break;
+                        case 202:console.log("bId 为空");break;
+                        case 101:console.log("成功增加一本");
+                                let n = $(num).val()*1 +1;
+                                let p = $(bp).text()*1*n;
+                                p = p.toFixed(2);
+                                $(num).val(n);
+                                $(bps).text(p);
+                                getSum();
+                                //showAllBooks();
+                                break;
+                    }
+                })
+        }
+
+        function deleteOneBook(bookId) {
+            let num = "#bookNum_"+bookId;
+            let bp = "#bPrice_" + bookId;
+            let bps = "#bPriceSum_" + bookId;
+            $.post('/cart/minusOneBook',
+                {
+                    bId: bookId
+                },
+                function (data) {
+                    switch (data.code) {
+                        case 201:console.log("uId 为空");break;
+                        case 202:console.log("bId 为空");break;
+                        case 101:console.log("成功删除一本，若图书数量为0，则从购物车中移除");
+                                let n = $(num).val()*1 -1;
+                                let p = $(bp).text()*1*n;
+                                p = p.toFixed(2);
+                                if(n > 0){
+                                    $(num).val(n);
+                                    $(bps).text(p);
+                                    getSum();
+                                }
+                                else{
+                                    showAllBooks();
+                                }
+                                break;
+                    }
+                })
+        }
+
+        function getSum() {
+
+                $.post('/cart/calcTotalPrice',
+                    {},  (data) => {
+                        if(data.totalPrice[0].totalPrice === null){
+                            $('#cartSum').text("0");
+                        }
+                        else{
+                            $('#cartSum').text(data.totalPrice[0].totalPrice)
+                        }
+                    }
+                )
+
+        }
+
+        function jiesuan() {
+            let i = 0;
+            $('input:checkbox').each(function() {
+                if($(this).is(':checked')){
+                    i = 1;
+                }
+            })
+            if(i === 0){
+                alert("没有选中商品");
+            }
+            else{
+                window.location.href = "http://localhost:8080/confirmOrder.html";
+            }
+        }
+
+    </script>
+</body>
+</html>

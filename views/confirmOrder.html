@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../public/css/bootstrap.css">
+    <link rel="stylesheet" href="../public/css/other.css">
+    <link rel="stylesheet" href="/public/css/index.css"/>
+    <script src="../public/js/jquery.min.js"></script>
+    <script src="../public/js/popper.min.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container  container-bg">
+        <!-- 顶部悬停栏 -->
+        <nav class="navbar navbar-expand bg-navbar sticky-top">
+            <a href="/index.html"><img src="/public/img/logo.png" alt=""/></a>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav" id="navbarT">
+                    <li class="nav-item">
+                        <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+                            我
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item text-muted" href="#" >账户信息</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-muted" href="/shoppingCart.html">我的购物车</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-muted" href="/myOrder.html">我的订单</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-muted" href="#">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+<!--        <button class="btn btn-outline-info" onclick="testLogin()">登录</button>-->
+<!--        <button class="btn btn-outline-info" onclick="confirmOrder()">确认订单</button>-->
+<!--        <button class="btn btn-outline-info" onclick="getSession()">获取session</button>-->
+        <div class="container border  bg-light">
+            <div class="container">
+                <br>
+                <h4>确认订单信息</h4>
+                <div id="ccorder" class="container bg-light">
+
+
+
+                </div>
+            </div>
+        </div>
+        <nav class="navbar"></nav>
+    </div>
+    <script>
+        $(document).ready(function(){
+            //testSignUp();
+            //testLogin();
+            isLogin();
+            confirmOrder();
+
+            //alertNull()
+        });
+
+        function isLogin() {
+            $.post('/user/isLogin',
+                {},
+                function (data){
+                    if(data.code){
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" onclick="loginOut()" href="/index.html">退出</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item dropdown">\n' +
+                            '                    <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">\n' +
+                            '                        我\n' +
+                            '                    </a>\n' +
+                            '                    <div class="dropdown-menu">\n' +
+                            '                        <a class="dropdown-item text-muted" href="#" >账户信息</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/shoppingCart.html">我的购物车</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/myOrder.html">我的订单</a>\n' +
+                            '                    </div>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+
+                    }
+                    else{
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item" >\n' +
+                            '                    <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+                    }
+                })
+        }
+
+        function loginOut() {
+            $.post('/user/userLogout',{},function (data) {
+                if(data.code === 900){
+                    window.location.href = "http://localhost:8080/index.html";
+                }
+            })
+        }
+
+        function confirmOrder() {
+            $.ajax({
+                method: 'POST',
+                url: '/cart/getUserCart',
+                success: function (data){
+
+                    let booksList = data.booksList;
+                    let corder;
+
+                        corder = '<div class="row border " style="line-height: 2.5">\n' +
+                            '                        <div class="col-sm-4">&nbsp;&nbsp;&nbsp;商品信息</div>\n' +
+                            '                        <div class="col-sm-2 text-center">单价</div>\n' +
+                            '                        <div class="col-sm-2 text-center">数量</div>\n' +
+                            '                        <div class="col-sm-2 text-center">小计</div>\n' +
+                            '                    </div>';
+                        for(let i = 0; i < booksList.length; i++){
+                            if(booksList[i].status === 1){
+                                let bName = booksList[i].bName;
+                                let bNum = booksList[i].bNum;
+                                let bPrice = booksList[i].bPrice;
+                                let bPriceSum = bNum * bPrice;
+                                bPriceSum = bPriceSum.toFixed(2);
+                                corder += '<div class="row border border-top-0 ">\n' +
+                                    '                        <div class="col-sm-4">\n' +
+                                    '                            <div  class="container">\n' +
+                                    '                                <div class="row">\n' +
+                                    '                                    <div class="col-sm-3">\n' +
+                                    '                                        <img src="../public/img/' + booksList[i].bUri + '" class="cartimg" alt="书本图片">\n' +
+                                    '                                    </div>\n' +
+                                    '                                    <div class="col-sm-9">\n' +
+                                    '                                        <a href="#">&nbsp;&nbsp;' + bName +'</a>\n' +
+                                    '                                    </div>\n' +
+                                    '                                </div>\n' +
+                                    '                            </div>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="col-sm-2 text-center">\n' +
+                                    '                            <div  class="_middle">\n' +
+                                    '                                <span class="text-dark card-text font-weight-bold">￥</span>\n' +
+                                    '                                <span class="text-dark card-text font-weight-bold">'+bPrice+'</span>\n' +
+                                    '                            </div>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="col-sm-2 text-center">\n' +
+                                    '                            <a >'+bNum+'</a>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="col-sm-2 text-center">\n' +
+                                    '                            <div  class="_middle">\n' +
+                                    '                                <span class="text-danger card-text font-weight-bold">￥</span>\n' +
+                                    '                                <span class="text-danger card-text font-weight-bold">'+bPriceSum+'</span>\n' +
+                                    '                            </div>\n' +
+                                    '                        </div>\n' +
+                                    '                    </div>';
+
+                            }
+                        }
+
+                        corder += '<div class="row " style="line-height: 2.5">\n' +
+                            '                        <div class="col-sm-6 border border-top-0">\n' +
+                            '                            <div class="row">\n' +
+                            '                                <div class="container">\n' +
+                            '                                    <span>填写收货信息</span>\n' +
+                            '                                    <div class="container">\n' +
+                            '                                        <div class="row input-group mb-3">\n' +
+                            '                                            <input type="text" id="Receiver_name" class="form-control" aria-label="Sizing example input"\n' +
+                            '                                                   placeholder="姓名" aria-describedby="inputGroup-sizing-default">\n' +
+                            '                                        </div>\n' +
+                            '                                        <div class="row input-group mb-3">\n' +
+                            '                                            <input type="tel" class="form-control" id="Receiver_tel"  aria-label="Sizing example input"\n' +
+                            '                                                   placeholder="电话" aria-describedby="inputGroup-sizing-default">\n' +
+                            '                                        </div>\n' +
+                            '                                        <div class="row input-group mb-3">\n' +
+                            '                                            <input type="text" class="form-control"  id="Receiver_addr_1"  aria-label="Sizing example input"\n' +
+                            '                                                   placeholder="省 市 区" aria-describedby="inputGroup-sizing-default">\n' +
+                            '                                        </div>\n' +
+                            '                                        <div class="row input-group mb-3">\n' +
+                            '                                            <input type="text" class="form-control"  id="Receiver_addr_2"  aria-label="Sizing example input"\n' +
+                            '                                                   placeholder="详细地址" aria-describedby="inputGroup-sizing-default">\n' +
+                            '                                        </div>\n' +
+                            '                                    </div>\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n' +
+                            '\n' +
+                            '                        </div>\n' +
+                            '                        <div class="col-sm-6 border border-top-0">\n' +
+                            '                            <div class="row border border-top-0 border-left-0 border-right-0">\n' +
+                            '                                <div class="col-sm-8">\n' +
+                            '                                    <div>\n' +
+                            '                                    <span>\n' +
+                            '                                运送方式&nbsp;：\n' +
+                            '                                 </span>\n' +
+                            '                                        <span>\n' +
+                            '                                普通配送\n' +
+                            '                                 </span>\n' +
+                            '                                        <span>\n' +
+                            '                                免邮\n' +
+                            '                                 </span>\n' +
+                            '                                    </div>\n' +
+                            '                                </div>\n' +
+                            '                                <div class="col-sm-4">\n' +
+                            '                                    <div>\n' +
+                            '                                        <input type="checkbox">&nbsp;&nbsp;开具发票\n' +
+                            '                                    </div>\n' +
+                            '                                </div>\n' +
+                            '\n' +
+                            '                            </div>\n' +
+                            '                            <div class="row">\n' +
+                            '                                <div class="container">\n' +
+                            '                                    <span>订单备注&nbsp;：</span>\n' +
+                            '                                    <textarea class="form-control" aria-label="With textarea" style="line-height: 3"></textarea>\n' +
+                            '<!--                                    <input type="text" class="beizhu" style="line-height: 5">-->\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n' +
+                            '                            <br>\n' +
+                            '                            <div class="row border-top">\n' +
+                            '                                <div class="col-sm-6">' +
+                            '                                       <div class="container">\n' +
+                            '                                        <div class="row">\n' +
+                            '                                            <span class="text-dark card-text font-weight-bold">合计&nbsp;:</span>\n' +
+                            '                                            <span class="text-danger card-text font-weight-bold">&nbsp;&nbsp;￥</span>\n' +
+                            '                                            <span class="text-danger card-text font-weight-bold" id="corderSum"></span>\n' +
+                            '                                        </div>\n' +
+                            '                                    </div></div>\n' +
+                            '                                <div class="col-sm-6">\n' +
+                            '                                    <div class="container">\n' +
+                            '                                        <div class="row">\n' +
+                            '                                            <a href="shoppingCart.html" class="btn btn-outline-dark tijiao">返回购物车</a>\n' +
+                            '                                            <a href="#" class="btn btn-danger tijiao" onclick="submitOrder()">提交订单</a>\n' +
+                            '                                        </div>\n' +
+                            '                                    </div>\n' +
+                            '\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n' +
+                            '                        </div>\n' +
+                            '                    </div>';
+
+                    $("#ccorder").html(corder);
+                    getSum();
+                }})
+        }
+
+
+        function testLogin() {
+            $.post('/user/userLogin',
+                {
+                    uName: "jc",
+                    uPwd: "1234",
+                },
+                function(result){
+                    switch (result.code) {
+                        case 300:
+                            console.log('登录成功');
+                            break;
+                        case 401:
+                            console.log('用户账号为空');
+                            break;
+                        case 402:
+                            console.log('用户名为空');
+                            break;
+                        case 403:
+                            console.log('密码为空');
+                            break;
+                        case 404:
+                            console.log('手机号码为空');
+                            break;
+                    }
+                }
+            );
+
+        }
+
+        function submitOrder() {
+            let oTP = $("#corderSum").text()*1;
+            console.log("123:"+oTP);
+            let oA = $("#Receiver_name").text() + "," +
+                    $("#Receiver_tel").text() + "," +
+                    $("#Receiver_addr_1").text() + "," +
+                    $("#Receiver_addr_2").text();
+            //Receiver_name Receiver_tel Receiver_addr_1 Receiver_addr_2
+            $.post('/order/createOrder',
+                {
+                    oTotalPrice: oTP,
+                    oAddress: oA,
+                },
+                 function (data) {
+                     if(data.code === 701){
+                         console.log(data.msg);
+                         window.location.href = "http://localhost:8080/myOrder.html";
+                     }
+                 })
+        }
+
+        function getSum() {
+            $.post('/cart/calcTotalPrice',
+                {},  (data) => {
+                    if(data.totalPrice[0].totalPrice === null){
+                        $('#corderSum').text("0");
+                    }
+                    else{
+                        $('#corderSum').text(data.totalPrice[0].totalPrice)
+                    }
+                }
+            )
+
+        }
+
+
+
+    </script>
+</body>
+</html>

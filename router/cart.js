@@ -6,7 +6,6 @@ const r = express.Router();
 r.post('/addBook', (request, response) => {
     var bId = request.body.bId;
     var uId = request.session.uId;
-    //console.log(uId);
     // 判空
     if (!uId) {
         response.send({code: 201, msg: 'uId should not be empty.'});
@@ -122,9 +121,10 @@ r.post('/changeBookStatus', (request, response) => {
         response.send({code: 202, msg: 'bId should not be empty.'});
         return;
     }
-    var sql = "UPDATE `cart` SET status=? WHERE uId=? AND bId=?";
-    pool.query(sql, [uId, bId, status], (err, result) => {
+    var sql = "UPDATE `cart` SET `status`=? WHERE uId=? AND bId=?";
+    pool.query(sql, [status, uId, bId], (err, result) => {
         if (err) throw err;
+        response.send({code: 203, msg: 'successfully change status'});
     })
 })
 
@@ -163,7 +163,7 @@ r.post('/getUserCart', (request, response) => {
 
 r.post('/calcTotalPrice', (request, response) => {
     var uId = request.session.uId;
-    var sql = "SELECT SUM(bNum * bPrice) FROM `books` as b, `cart` as c WHERE c.status=1 AND uId=? AND b.bId=c.bId";
+    var sql = "SELECT SUM(bNum * bPrice) as totalPrice FROM `books` as b, `cart` as c WHERE c.status=1 AND uId=? AND b.bId=c.bId";
     pool.query(sql, [uId], (err, result) => {
         if (err) throw err;
         // console.log(result);

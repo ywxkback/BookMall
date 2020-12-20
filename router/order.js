@@ -5,47 +5,59 @@ const r =express.Router();
 
 /* 返回所有订单 */
 r.get('/findAll', (request, response) => {
-    var uId = req.session.uId;
+    var uId = request.session.uId;
     var sql = 'SELECT * FROM `orders`' +
         'WHERE uId = ?';
     pool.query(sql,[uId], (err, result, fields) => {
         if (err) throw err;
-        response.send({'list' : result});
-        response.send({'code': 400,msg:"返回订单成功"});
+        response.send({list : result,code: 400,msg:"返回订单成功"});
         console.log(result);
+    })
+});
+
+/* 返回某个订单 */
+r.get('/findOne', (request, response) => {
+    var oId = request.query.oId;
+    console.log(oId)
+    var sql = 'SELECT * FROM `orderbook` AS ob, `orders` AS o , `books` AS b WHERE ob.oId=o.oId AND ' +
+        'b.bId = ob.bId AND o.oId = ?'
+    var list = [];
+    pool.query(sql,[oId],(err,result,fields) => {
+        if (err) throw err;
+        response.send({code:400, result:result})
     })
 });
 
 /* 创建订单 */
 r.post('/createOrder', (request, response) => {
-    var bIdList = request.body.bIdList.split(",");
-    var bNumList = request.body.bNumList.split(",");
-    var n = bIdList.length;
     var oTotalPrice = request.body.oTotalPrice;
     var oAddress = request.body.oAddress;
     var uId = request.session.uId;
-    console.log(request.body)
     var sqlOrders = "INSERT INTO `orders` (uId,oTotalPrice,oAddress,oState) VALUES (?,?,?,'进行中') ";
     pool.query(sqlOrders,[uId,oTotalPrice,oAddress], (err, result, fields) => {
         if (err) throw err;
         var oId = result.insertId;
-        for(var i = 0;i < n;i++)
-        {
-            var bId = bIdList[i];
-            var bNum = bNumList[i];
-            var sqlOrderBook = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
-            pool.query(sqlOrderBook,[oId,bId,bNum],(err,result,fields) => {
-                if(err) throw err;
-            })
-            var sqlCartDe = "DELETE FROM `cart` WHERE uId=? AND bId = ?"
-            pool.query(sqlCartDe, [uId, bId], (err, result) => {
-                if (err) throw err;
-            })
-        }
+        var sql = "SELECT * from `cart` where status = '1' ";
+        pool.query(sql, (err, result, fields) => {
+            if (err) throw err;
+            console.log(result)
+            for(var i = 0;i < result.length;i++)
+            {
+                var bId = result[i].bId;
+                var bNum = result[i].bNum;
+                var sqlOrderBook = "INSERT INTO `orderbook` (oId,bId,bNum) VALUES (?,?,?) ";
+                pool.query(sqlOrderBook,[oId,bId,bNum],(err,result,fields) => {
+                    if(err) throw err;
+                })
+            }
+        })
+        var sqlCartDe = "DELETE FROM `cart` WHERE status = '1' "
+        pool.query(sqlCartDe, (err, result) => {
+            if (err) throw err;
+        })
     })
-    response.send({'code' : 700,msg:"创建订单成功"});
+    response.send({code: 701,msg:"创建订单成功"});
 });
-
 
 /* 删除订单 */
 r.get('/deleteOrder', (request, response) => {

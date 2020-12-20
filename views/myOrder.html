@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../public/css/bootstrap.css">
+    <link rel="stylesheet" href="../public/css/other.css">
+    <link rel="stylesheet" href="/public/css/index.css"/>
+    <script src="../public/js/jquery.min.js"></script>
+    <script src="../public/js/popper.min.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container container-bg">
+        <!-- 顶部悬停栏 -->
+        <nav class="navbar navbar-expand bg-navbar sticky-top">
+            <a href="/index.html"><img src="/public/img/logo.png" alt=""/></a>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav" id="navbarT">
+                    <li class="nav-item">
+                        <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+                            我
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item text-muted" href="#" >账户信息</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-muted" href="/shoppingCart.html">我的购物车</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-muted" href="/myOrder.html">我的订单</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-muted" href="#">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container border   bg-light">
+            <div class="container">
+                <br>
+                <h4>我的订单</h4>
+                <div id="morder" class="container bg-light">
+
+                </div>
+                <br>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        $(document).ready(function(){
+            //testSignUp();
+            //testLogin();
+            isLogin();
+            myOrder();
+        });
+
+        function isLogin() {
+            $.post('/user/isLogin',
+                {},
+                function (data){
+                    if(data.code){
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" onclick="loginOut()" href="/index.html">退出</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item dropdown">\n' +
+                            '                    <a class="nav-link text-muted dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">\n' +
+                            '                        我\n' +
+                            '                    </a>\n' +
+                            '                    <div class="dropdown-menu">\n' +
+                            '                        <a class="dropdown-item text-muted" href="#" >账户信息</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/shoppingCart.html">我的购物车</a>\n' +
+                            '                        <div class="dropdown-divider"></div>\n' +
+                            '                        <a class="dropdown-item text-muted" href="/myOrder.html">我的订单</a>\n' +
+                            '                    </div>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+
+                    }
+                    else{
+                        let htmlll = '<li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" id="lllogin" href="/login.html">登录</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item" >\n' +
+                            '                    <a class="nav-link text-muted" id="rrregist" href="/regist.html">注册</a>\n' +
+                            '                </li>\n' +
+                            '                <li class="nav-item">\n' +
+                            '                    <a class="nav-link text-muted" href="#">联系我们</a>\n' +
+                            '                </li>';
+
+                        $("#navbarT").html(htmlll);
+                    }
+                })
+        }
+
+        function loginOut() {
+            $.post('/user/userLogout',{},function (data) {
+                if(data.code === 900){
+                    window.location.href = "http://localhost:8080/index.html";
+                }
+            })
+        }
+
+        function myOrder() {
+            $.ajax({
+                method: 'GET',
+                url: '/order/findAll',
+                data:{},
+                success: function (data){
+                    let list = data.list;
+                    console.log(list);
+                    let sendIng = '';
+                    let getEd = '';
+                    let orderShow = '<div class="row border" style="line-height: 2.5">\n' +
+                        '                        <div class="col-sm-3 text-center">\n' +
+                        '                            <span>商品信息</span>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="col-sm-2 text-center">\n' +
+                        '                            <span>单价</span>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="col-sm-1 text-center">\n' +
+                        '                            <span>数量</span>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="col-sm-2 text-center">\n' +
+                        '                            <span>付款金额</span>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="col-sm-2 text-center">\n' +
+                        '                            <span>交易状态</span>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="col-sm-2 text-center">\n' +
+                        '                            <span>交易操作</span>\n' +
+                        '                        </div>\n' +
+                        '                    </div>';
+                    for(let i=0; i<list.length; i++){
+                        if(list[i].oState === "进行中"){
+                            sendIng += '<div class="row">\n' +
+                                '                        <div class="container">\n' +
+                                '                            <div class="row border">\n' +
+                                '                                <div class="container" style="line-height: 2; background-color: #FFF3CD">\n' +
+                                '                                    <span>订单号：</span>\n' +
+                                '                                    <span>B10692680'+list[i].oId+'</span>\n' +
+                                '                                </div>\n' +
+                                '                            </div>\n' +
+                                '                            <div class="row border">\n' +
+                                '                                <div class="col-sm-6 border-right">';
+                            let oneOrderlist = findOneOrder(list[i].oId);
+                            for(let j=0; j< oneOrderlist.length; j++){
+                                sendIng += ' <div class="row border-top">\n' +
+                                    '                                            <div class="col-sm-6">\n' +
+                                    '                                                <div  class="container">\n' +
+                                    '                                                    <div class="row">\n' +
+                                    '                                                        <div class="col-sm-5">\n' +
+                                    '                                                            <img src="../public/img/'+oneOrderlist[j].bUri+'" class="cartimg" onclick="watchDetail('+oneOrderlist[j].bId+')" alt="书本图片">\n' +
+                                    '                                                        </div>\n' +
+                                    '                                                        <div class="col-sm-7">\n' +
+                                    '                                                            <a href="#" class="text-dark text-decoration-none" onclick="watchDetail('+oneOrderlist[j].bId+')">&nbsp;&nbsp;'+oneOrderlist[j].bName+'</a>\n' +
+                                    '                                                        </div>\n' +
+                                    '                                                    </div>\n' +
+                                    '                                                </div>\n' +
+                                    '                                            </div>\n' +
+                                    '                                            <div class="col-sm-4 text-center">\n' +
+                                    '                                                <div  class="_middle">\n' +
+                                    '                                                    <span class="text-dark card-text">￥</span>\n' +
+                                    '                                                    <span class="text-dark card-text">'+oneOrderlist[j].bPrice+'</span>\n' +
+                                    '                                                </div>\n' +
+                                    '                                            </div>\n' +
+                                    '                                            <div class="col-sm-2 text-center">\n' +
+                                    '                                                <a >'+oneOrderlist[j].bNum+'</a>\n' +
+                                    '                                            </div>\n' +
+                                    '                                        </div>';
+                            }
+                            sendIng += '</div>\n' +
+                                '                                <div class="col-sm-2 border-right text-center">\n' +
+                                '                                    <div  class="_middle">\n' +
+                                '                                        <span class="text-dark card-text font-weight-bold">￥</span>\n' +
+                                '                                        <span class="text-dark card-text font-weight-bold">'+list[i].oTotalPrice+'</span>\n' +
+                                '                                    </div>\n' +
+                                '                                </div>\n' +
+                                '                                <div class="col-sm-2 border-right  text-center">\n' +
+                                '                                    <span>物流派送中</span>\n' +
+                                '                                </div>\n' +
+                                '                                <div class="col-sm-2 border-right  text-center">\n' +
+                                '                                    <a href="" class="btn btn-info" onclick="recieve('+list[i].oId+')">确认收货</a>\n' +
+                                '                                </div>\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                    </div>';
+                        }
+                        else{
+                            getEd += '<div class="row">\n' +
+                                '                        <div class="container">\n' +
+                                '                            <div class="row border">\n' +
+                                '                                <div class="container bg-light" style="line-height: 2; background-color: #b9bbbe;">\n' +
+                                '                                    <span>订单号：</span>\n' +
+                                '                                    <span>B10692680'+list[i].oId+'</span>\n' +
+                                '                                </div>\n' +
+                                '                            </div>\n' +
+                                '                            <div class="row border">\n' +
+                                '                                <div class="col-sm-6 border-right">';
+                            let oneOrderlist = findOneOrder(list[i].oId);
+                            for(let j=0; j< oneOrderlist.length; j++){
+                                getEd += ' <div class="row border-top">\n' +
+                                    '                                            <div class="col-sm-6">\n' +
+                                    '                                                <div  class="container">\n' +
+                                    '                                                    <div class="row">\n' +
+                                    '                                                        <div class="col-sm-5">\n' +
+                                    '                                                            <img src="../public/img/'+oneOrderlist[j].bUri+'" class="cartimg" onclick="watchDetail('+oneOrderlist[j].bId+')" alt="书本图片">\n' +
+                                    '                                                        </div>\n' +
+                                    '                                                        <div class="col-sm-7">\n' +
+                                    '                                                            <a href="#" class="text-decoration-none text-dark" onclick="watchDetail('+oneOrderlist[j].bId+')">&nbsp;&nbsp;'+oneOrderlist[j].bName+'</a>\n' +
+                                    '                                                        </div>\n' +
+                                    '                                                    </div>\n' +
+                                    '                                                </div>\n' +
+                                    '                                            </div>\n' +
+                                    '                                            <div class="col-sm-4 text-center">\n' +
+                                    '                                                <div  class="_middle">\n' +
+                                    '                                                    <span class="text-dark card-text">￥</span>\n' +
+                                    '                                                    <span class="text-dark card-text">'+oneOrderlist[j].bPrice+'</span>\n' +
+                                    '                                                </div>\n' +
+                                    '                                            </div>\n' +
+                                    '                                            <div class="col-sm-2 text-center">\n' +
+                                    '                                                <a >'+oneOrderlist[j].bNum+'</a>\n' +
+                                    '                                            </div>\n' +
+                                    '                                        </div>';
+                            }
+                            getEd += '</div>\n' +
+                                '                                <div class="col-sm-2 border-right text-center">\n' +
+                                '                                    <div  class="_middle">\n' +
+                                '                                        <span class="text-dark card-text font-weight-bold">￥</span>\n' +
+                                '                                        <span class="text-dark card-text font-weight-bold">'+list[i].oTotalPrice+'</span>\n' +
+                                '                                    </div>\n' +
+                                '                                </div>\n' +
+                                '                                <div class="col-sm-2 border-right  text-center">\n' +
+                                '                                    <span>已收货</span>\n' +
+                                '                                </div>\n' +
+                                '                                <div class="col-sm-2 border-right  text-center">\n' +
+                                '                                    <a href="" class="btn btn-outline-secondary" onclick="deleteOrder('+list[i].oId+')">删除订单</a>\n' +
+                                '                                </div>\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                    </div>';
+                        }
+                    }
+                    orderShow += sendIng;
+                    orderShow += getEd;
+                    $("#morder").html(orderShow);
+                }})
+        }
+
+        function findOneOrder(oId) {
+            let list;
+            console.log("hhhhhh: 1");
+            $.ajax({
+                method: 'GET',
+                url: '/order/findOne',
+                data:{
+                    oId: oId,
+                },
+                async: false,
+                success: function (data) {
+                    if(data.code === 400){
+                        list = data.result;
+                        console.log("hhhhhh: 2");
+                    }
+                },
+                error: function (data) {
+                    console.log("you have an error");
+                }
+            })
+            console.log("hhhhhh: 3");
+             return list;
+
+        }
+
+        function recieve(oo) {
+            $.get('/order/receiveOrder',
+                {oId:oo},
+                function (data) {
+                    switch (data.code) {
+                        case 405:
+                            console.log(data.msg);
+                            break;
+                        case 600:
+                            console.log(data.msg);
+                            myOrder();
+                            break;
+                    }
+                })
+        }
+
+        function deleteOrder(oo) {
+            $.get('/order/deleteOrder',
+                {oId:oo},
+                function (data) {
+                    switch (data.code) {
+                        case 405:
+                            console.log(data.msg);
+                            break;
+                        case 500:
+                            console.log(data.msg);
+                            myOrder();
+                            break;
+                    }
+                })
+        }
+
+        //转到图书详情页面
+        function watchDetail(bId){
+            $(location).attr('href', '/bookDetail.html?bId=' + bId);
+        }
+
+    </script>
+</body>
+</html>
